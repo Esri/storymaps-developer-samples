@@ -1,43 +1,20 @@
-# ArcGIS StoryMaps script embed examples
+# ArcGIS StoryMaps developer samples
 
-This repository is intended for sharing samples of script-embedded ArcGIS StoryMaps stories. Embedding stories using a script-embed is a developer-friendly pathway for customizing your stories and implementing custom functionality.
+This repository is intended for sharing a collection of developer-friendly pathways for customizing or extending functionality related to ArcGIS StoryMaps.
 
 ## Features
 
-Embedding stories in your webpage usings `<script>` tags enables you to:
-- [Embed the story within a webpage within your own domain](/getting-started/README.md).
-- [Wrap the story in your header and footer](/header-footer/README.md).
-- [Open the story with a splash page or pop-up](/splash-page/README.md).
-- [Replace the fonts in your story with self-hosted fonts or those from a font delivery service.](/font-replacement/README.md)
-- [Implement your own analytics](/analytics/README.md).
+- **[Find related ArcGIS Online items script](/find-related-items-script/README.md)** features a Python tool to inventory and visualize the relationships between items in your organization and beyond.
+
+- **[Script embed samples](/storymaps-script-embed-samples/README.md)** demonstrate how to embed stories in a web page using `<script>` tags which offers a variety of pathways for customizing and extending the integration of your stories within your website.
 
 ## Instructions
 
-Each sample folder within this repository demonstrates a specific use case and contains:
-- **HTML** index.html file that acts as the main webpage with a script-embed of an ArcGIS StoryMap story.
-- **CSS**  style.css file containing rules for overriding the styling of elements within a story.
-- **Javascript (optional)** javascript.js file containing code to manipulate content of the webpage.
-- **README** A read me document that outlines the use case for the sample, how to implement it, and a link to a live example (if applicable).
-
-The contents of these files can be copied and modified to suit your needs and hosted on your webserver.
-
-### Embedding a story using script tags
-Within the HTML `index.html` file a script tag is used to embed the story.
-
-```html
-  <!-- Embedded story -->
-  <div class="storymaps-root"></div>
-  <script
-    id="embed-script"
-    src="https://storymapsstg.arcgis.com/embed/view"
-    data-story-id="<UPDATE_WITH_YOUR_STORY_ID>"
-    data-root-node=".storymaps-root"
-  ></script>
-```
+Each sample folder within this repository may have different requirements or instructions, explore the sample of interest to learn about specific instructions or requirements.
 
 ## Resources
 
-- [GitHub Markdown Reference](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+- [ArcGIS StoryMaps Overview](https://www.esri.com/en-us/arcgis/products/arcgis-storymaps/overview)
 
 ## Issues
 
