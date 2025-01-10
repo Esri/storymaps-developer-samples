@@ -2,7 +2,7 @@
 
 This folder contains a Python script tool that uses the ArcGIS API for Python to inventory the content with your ArcGIS organization and detect relationships between these items and other content beyond. The script records these relationships and reports them as a `csv` file and can additionally visualize them in a network graph.
 
-![This simplified example demonstrates how the connection between items can be visualized in a graph network.](/find-related-items-script/assets/Sample_Graph.png)*This simplified example demonstrates how the connection between items can be visualized in a graph network.*
+![This simplified example demonstrates how the connection between items can be visualized in a graph network.](/find-related-items-script/assets/Sample_Graph.jpg)*This simplified example demonstrates how the connection between items can be visualized in a graph network.*
 
 ## Features
 
