@@ -4,11 +4,11 @@ This sample demonstrates how to reference a self-hosted font file and replace th
 
 This is useful when you want the typefaces of your story to conform to the style guide and fonts used by your organization that may not be available by default in the ArcGIS StoryMaps builder.
 
->**Note:** See [this sample](/splash-page/README.md#css-customizations) for an example of referencing a font from a font delivery service (Google Fonts/Adobe Fonts)
+>**Note:** See [this sample](/storymaps-script-embed-samples/splash-page/README.md#css-customizations) for an example of referencing a font from a font delivery service (Google Fonts/Adobe Fonts)
 
 ## Live sample
 
-[![Splash screen example](/font-replacement/assets/sample_custom_font.jpg "Splash screen example")](https://storymaps.esri.com/stories/storymaps-script-embed-examples/font-replacement/)*[Click to see the live example](https://storymaps.esri.com/stories/storymaps-script-embed-examples/font-replacement/)*
+[![Splash screen example](/storymaps-script-embed-samples/font-replacement/assets/sample_custom_font.jpg "Splash screen example")](https://storymaps.esri.com/stories/storymaps-script-embed-examples/font-replacement/)*[Click to see the live example](https://storymaps.esri.com/stories/storymaps-script-embed-examples/font-replacement/)*
 
 ## Usage instructions
 
