@@ -1,0 +1,26 @@
+name: Deploy HTML Files
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Copy only the desired folders to a staging directory
+      - name: Prepare Files
+        run: |
+          mkdir -p deploy/
+          cp -r storymaps-script-embed-samples/font-replacement deploy/font-replacement
+          cp -r storymaps-script-embed-samples/header-footer deploy/header-footer
+          cp -r storymaps-script-embed-samples/splash-page deploy/splash-page
+
+      # Deploy the staged files
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
