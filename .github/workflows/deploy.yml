@@ -2,10 +2,13 @@ name: Deploy HTML Files
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - rud12103/git-pages
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: udebuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
