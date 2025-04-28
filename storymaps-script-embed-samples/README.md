@@ -36,10 +36,11 @@ Within the HTML `index.html` file a script tag is used to embed the story.
 <script
   id="embed-script"
   src="https://storymaps.arcgis.com/embed/view"
-  data-story-id="<UPDATE_WITH_YOUR_STORY_ID>"
-  data-root-node=".storymaps-root"
 ></script>
 ```
+
+> [!NOTE]
+> A previous version of the script tag required both the Story ID and the Root Node to be defined within the script tag. This is no longer necessary as the Story ID can be defined in a global configuration [object]().
 
 > [!TIP]
 > Be sure to add appropriate [`<meta>` tags](https://ogp.me/) to your web page so it appears in web search results and looks good when it's shared on social media sites. Inspect any published story to see the set of tags attached to ArcGIS StoryMaps items.
@@ -50,6 +51,8 @@ Within the HTML `index.html` file a script tag is used to embed the story.
 
 Define a Global Configuration Object: Define a global object above the script embed tag to configure specific aspects of your story. Currently, the following configurations are supported:
 
+- Story ID: The ID of the story you want to embed
+- Root Node: The CSS selector of the div where the story will be embedded
 - Custom Fonts: Refer to the font-replacement example for guidance
 - Custom Header: Refer to the header-footer example for guidance
 
@@ -59,6 +62,10 @@ Define a Global Configuration Object: Define a global object above the script em
 #### Config typing
 
 ```ts
+type StoryId = string;
+
+type RootNode = string; // CSS selector
+
 type EmbedFont = {
   fontFamily: string;
   weight: {
@@ -80,6 +87,8 @@ interface StoryMapsEmbedConfig {
 
 ```ts
 window.storyMapsEmbedConfig = {
+  storyId: "<UPDATE_WITH_YOUR_STORY_ID>",
+  rootNode: "<UPDATE WITH YOUR DIV SELECTOR>",
   font: {
     title: {
       // Defining title is optional

@@ -4,8 +4,10 @@
 */
 
 function generateScriptConfig() {
-    window.storyMapsEmbedConfig = {
-      topOffset: "3rem"
+  window.storyMapsEmbedConfig = {
+      storyId: "1ba69ca9c31b4183b1ee486c36364198",
+      rootNode: ".storymaps-root",
+      topOffset: "3rem",
     };
   }
 
@@ -13,8 +15,6 @@ function generateScriptConfig() {
     const script = document.createElement('script');
     script.id = 'embed-script';
     script.src = `https://storymapsqa.arcgis.com/embed/view`;
-    script.setAttribute('data-story-id', "1ba69ca9c31b4183b1ee486c36364198");
-    script.setAttribute('data-root-node', '.storymaps-root');
     document.body.appendChild(script);
   }
 
