@@ -2,6 +2,7 @@
   DISCLAIMER: This example code is provided for educational and demonstration purposes.
   It may not represent best practices for security and/or performance and is not intended for production use.
 -->
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,11 +28,15 @@
 
   <!-- Embedded story -->
   <div class="storymaps-root"></div>
+  <script>
+    window.storyMapsEmbedConfig ={
+      storyId: 'b81db1f5fa7141638db1407a0af97bf7',
+      rootSelector: '.storymaps-root'
+    }
+  </script>
   <script
     id="embed-script"
     src="https://storymaps.arcgis.com/embed/view"
-    data-story-id="b81db1f5fa7141638db1407a0af97bf7"
-    data-root-node=".storymaps-root"
   ></script>
 
   <script>
