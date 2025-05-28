@@ -1,3 +1,8 @@
+<!--
+  DISCLAIMER: This example code is provided for educational and demonstration purposes.
+  It may not represent best practices for security and/or performance and is not intended for production use.
+-->
+
 <html>
 
 <head>
@@ -54,8 +59,13 @@
 <body>
     <!-- Embedded story -->
     <div class="storymaps-root"></div>
-    <script id="embed-script" src="https://storymaps.arcgis.com/embed/view"
-        data-story-id="749af21064e34f029bdd53946d9d941a" data-root-node=".storymaps-root"></script>
+    <script>
+        window.storyMapsEmbedConfig = {
+            storyId: '749af21064e34f029bdd53946d9d941a',
+            rootSelector: '.storymaps-root'
+        };
+    </script>
+    <script id="embed-script" src="https://storymaps.arcgis.com/embed/view"></script>
 </body>
 
 </html>
