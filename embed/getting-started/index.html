@@ -2,22 +2,26 @@
   DISCLAIMER: This example code is provided for educational and demonstration purposes.
   It may not represent best practices for security and/or performance and is not intended for production use.
 -->
-
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Custom Domain Sample</title>
+    <!-- Add other optional metatags here (e.g. to identify the content of this page 
+        for search engines) -->
+    <title>Getting Started Sample</title>
   </head>
   <body>
-    <!-- Embedded story -->
+    <!-- Place this root container where you want the story to appear in the page -->
     <div class="storymaps-root"></div>
+    <!-- This is the config section. The storyId identifies the story to be loaded -->
     <script>
       window.storyMapsEmbedConfig = {
         storyId: 'e857e2e8b0f34597999077a04dba4350',
         rootSelector: '.storymaps-root'
       };
     </script>
+    <!-- This final script tag loads the StoryMaps presentation engine  -->
     <script
       id="embed-script"
       src="https://storymaps.arcgis.com/embed/view"

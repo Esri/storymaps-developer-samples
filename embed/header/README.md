@@ -4,7 +4,7 @@ Does your organization employ a custom header and footer for its websites? It's 
 
 ## Live sample
 
-[![Sample header footer](./assets/sample_header_footer.jpg "Sample header footer")](https://storymaps.esri.com/stories/storymaps-script-embed-examples/header-footer/)_[Click to see the live example](https://storymaps.esri.com/stories/storymaps-script-embed-examples/header-footer/)_
+[![Sample header footer](./assets/sample_header_footer.jpg "Sample header footer")](https://storymaps.esri.com/stories/embed/header/)_[Click to see the live example](https://esri.github.io/storymaps-developer-samples/embed/header/index.html)_
 
 ## Usage instructions
 
@@ -13,7 +13,7 @@ Implementing a customer header and footer involves:
 - Creating a header element in your page.
 - Creating a footer element in your page.
 - Styling these elements.
-- Passing the height of your header to the Story.
+- Embedding your story within the page.
 
 ### HTML customizations
 
@@ -55,22 +55,24 @@ Implementing a customer header and footer involves:
 **Styling the header and footer** The header and footer of your webpage can be styled to align with branding elsewhere on your site.
 
 ```css
+/* Basic styling for header and footer */
 body {
-  --primary-background-color: #e46116;
-  --primary-text-color: white;
+  font-family: "Sigmar";
+  margin: 0;
+  padding: 0;
 }
+
 /* Header Styles */
 header {
-  background-color: var(--primary-color);
+  background-color: #e46116;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  height: 48px;
-  color: var(--primary-text-color);
+  color: white;
   position: sticky;
   top: 0;
-  z-index: 1; /* Ensure it stays on top of other elements in the Story */
+  height: 3rem;
+  z-index: 1000; /* Ensure it stays on top of other elements */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add shadow for better visibility */
   font-family: "Sigmar One";
 }
@@ -78,10 +80,11 @@ header {
 .nav-tabs {
   display: flex;
   gap: 20px;
+  margin-right: 10px
 }
 
 .nav-tabs a {
-  color: var(--primary-text-color);
+  color: white;
   text-decoration: none;
   font-size: 16px;
 }
@@ -91,43 +94,58 @@ header {
 }
 
 /* Footer Styles */
-footer,
-footer a {
-  color: var(--primary-text-color);
-}
-
 footer {
-  background-color: var(--primary-color);
+  background-color: #e46116;
+  color: white;
   padding: 20px;
   text-align: center;
 }
 
 footer a {
+  color: white;
   text-decoration: none;
   margin: 0 15px;
 }
 
-footer a:hover {
+a:hover {
   text-decoration: underline;
 }
 ```
 
 ### Configure and initialize the Story
 
-NOTE: To ensure the proper functionality of various UI components within a Story, such as a Sidecar, it is essential to define a storyMapsEmbedConfig object that includes your headers' height to facilitate seamless integration
+Now that you've created an attractive container page, it's time to embed your story.
+
+First, make sure your page includes a StoryMaps root `<div>`—this is where the story will appear.
+
+Second, you'll need to insert two `<script>` tags. The first contains the configuration information required for the embed—namely, the story’s ID and the identifier for the root element. In this case, you’ll also include an additional config parameter: the height of your page’s header. This ensures that certain UI components within the story (like Sidecar blocks) function properly.
 
 ```html
-<!-- Pass the height of your custom header to the Story config object -->
-<script>
-  window.storyMapsEmbedConfig = {
-    topOffset: '48px';
-  };
-</script>
-<!-- Load the story -->
-<script
-  id="embed-script"
-  src="https://storymaps.arcgis.com/embed/view"
-  data-story-id="<UPDATE_WITH_YOUR_STORY_ID>"
-  data-root-node=".storymaps-root"
-></script>
+
+  <body>
+
+    <!-- Place this root container where you want the story to appear in the page -->
+    <div class="storymaps-root"></div>
+
+    <!-- This is the embed config section. Replace {YOUR-STORY-ID} with the itemID 
+        of the you wish to load.  ALSO, this is where you can specify your 
+        header's height. -->
+    <script>
+      window.storyMapsEmbedConfig = {
+        storyId: '{YOUR-STORY-ID}',
+        rootNode: ".storymaps-root",
+        topOffset: "3rem",
+      };
+    </script>
+
+    <!-- This final script tag loads the StoryMaps presentation engine  -->
+    <script
+      id="embed-script"
+      src="https://storymaps.arcgis.com/embed/view"
+    ></script>
+
+  </body>
+
 ```
+
+NOTE: Instead of placing the script elements directly in your HTML, you may prefer to keep your JavaScript in a separate .js file—just as we've done in the code files in this folder.

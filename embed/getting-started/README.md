@@ -12,7 +12,7 @@ To implement a custom domain and link:
 
 1. Create an `index.html` page (or add the following code elements to an existing HTML page)
 1. Add a `<div>` called `storymaps-root` where you want the story to appear on the page
-1. Add a `<script>` tag according to the code sample below and include YOUR story item ID as the `data-story-id`
+1. Add the two `<script>` elements detailed in the sample code below and include YOUR story item ID as the `data-story-id`
 1. Host the HTML page in the web directory of your choosing to set its URL
     - e.g., `my-domain.gov/water-report`, `my-domain.org/our-stories/january-update`, etc.
 
@@ -30,24 +30,30 @@ If you are adding a story to an existing web page, it will likely already have `
 ```html
 <!DOCTYPE html>
 <html>
-
-<!-- Add metatags below to identify the content of this page for search engines -->
-<meta></meta> 
-
-<body>
-
-<!-- Place this on the page where you want the story to appear -->
-<div class="storymaps-root"></div>
-
-<!-- Replace {YOUR-STORY-ID} with the itemID of the story -->
-<script>
-  id="embed-script"
-  src="https://storymaps.arcgis.com/embed/view"
-  data-story-id="{YOUR-STORY-ID}"
-  data-root-node=".storymaps-root"
-</script>
-
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add other optional metatags here (e.g. to identify the content of this page 
+        for search engines) -->
+    <title>Getting Started Sample</title>
+  </head>
+  <body>
+    <!-- Place this root container where you want the story to appear in the page -->
+    <div class="storymaps-root"></div>
+    <!-- This is the config section. Replace {YOUR-STORY-ID} with the itemID of the 
+        you wish to load -->
+    <script>
+      window.storyMapsEmbedConfig = {
+        storyId: '{YOUR-STORY-ID}',
+        rootSelector: '.storymaps-root'
+      };
+    </script>
+    <!-- This final script tag loads the StoryMaps presentation engine  -->
+    <script
+      id="embed-script"
+      src="https://storymaps.arcgis.com/embed/view"
+    ></script>
+  </body>
 </html>
 ```
 

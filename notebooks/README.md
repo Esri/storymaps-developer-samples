@@ -1,4 +1,4 @@
-# Story helper Notebooks
+# Notebooks
 
 This folder contains samples of Python Notebooks that can be run in the ArcGIS Notebooks environment to perform a number of utility functions related to story management, authoring, and more.
 
@@ -6,7 +6,7 @@ This folder contains samples of Python Notebooks that can be run in the ArcGIS N
 
 The following examples demonstrate how ArcGIS Notebooks can leverage the ArcGIS API for Python to perform simple tasks and achieve some efficiencies in content management and story authoring.
 
-- [Protect your story and related ArcGIS content items from accidental deletion](/storymaps-utilities-notebooks/story-protector/README.md).
+- [Protect your story and related ArcGIS content items from accidental deletion](/notebooks/story-protector/README.md).
 
 ## Instructions
 

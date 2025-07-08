@@ -7,7 +7,6 @@ function generateScriptConfig() {
   window.storyMapsEmbedConfig = {
     storyId: "749af21064e34f029bdd53946d9d941a",
     rootNode: ".storymaps-root",
-      topOffset: "3rem",
       font: {
         title: {
           fontFamily: "Permanent Marker",
@@ -31,7 +30,7 @@ function generateScriptConfig() {
 function createScriptedEmbed() {
     const script = document.createElement('script');
     script.id = 'embed-script';
-    script.src =`https://storymapsqa.arcgis.com/embed/view`;
+    script.src =`https://storymaps.arcgis.com/embed/view`;
     document.body.appendChild(script);
   }
 
