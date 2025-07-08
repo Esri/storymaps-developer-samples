@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
   DISCLAIMER: This example code is provided for educational and demonstration purposes.
   It may not represent best practices for security and/or performance and is not intended for production use.
@@ -6,25 +7,31 @@
 <html>
 
 <head>
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Analytics Sample</title>
+
     <!-- Google Analytics Code -->
-    <!-- Replace {TAG_ID} -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={TAG_ID}"></script>
+    <!-- Replace {G-XXXXXXX} -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
+        function gtag(){ dataLayer.push(arguments); }
         gtag('js', new Date());
-
-        // Add TAG_ID here
-        gtag('config', '{TAG_ID}');
+        gtag('config', 'G-XXXXXXX');
     </script>
-    <!-- END Google Analytics Code-->
+    <!-- End Google Analytics Code-->
 
+    <!-- Adobe Analytics -->
+    <!-- Replace {launch-XXXX.min.js} with your actual launch URL -->
+    <script src="https://assets.adobedtm.com/{launch-XXXX.min.js}"></script>
+    <script>
+        window._satellite && _satellite.pageBottom();  // Initialize Adobe Analytics
+    </script>
+    <!-- End Adobe Analytics -->
 
-    <!-- Facebook Pixel Code -->
-    <!-- Replace {PIXEL_ID} -->
+    <!-- Meta Pixel Code -->
     <script>
         !function (f, b, e, v, n, t, s) {
             if (f.fbq) return; n = f.fbq = function () {
@@ -37,6 +44,7 @@
             s.parentNode.insertBefore(t, s)
         }(window, document, 'script',
             'https://connect.facebook.net/en_US/fbevents.js');
+        /* Replace {PIXEL_ID} */
         fbq('init', '{PIXEL_ID}');
         fbq('track', 'PageView');
     </script>
@@ -44,27 +52,21 @@
         <img height="1" width="1" style="display:none"
             src="https://www.facebook.com/tr?id={PIXEL_ID}&ev=PageView&noscript=1" />
     </noscript>
-    <!-- End Facebook Pixel Code -->
-
-    <!-- Adobe Analytics -->
-    <!-- Replace {launch-XXXX.min.js} -->
-    <script src="https://assets.adobedtm.com/{launch-XXXX.min.js}"></script>
-    <script>
-        _satellite.pageBottom();  // Initialize Adobe Analytics
-    </script>
-    <!-- End Adobe Analytics -->
+    <!-- End Meta Pixel Code -->
 
 </head>
 
 <body>
-    <!-- Embedded story -->
+    <!-- root container for embedded story -->
     <div class="storymaps-root"></div>
+    <!-- embed config -->
     <script>
         window.storyMapsEmbedConfig = {
             storyId: '749af21064e34f029bdd53946d9d941a',
             rootSelector: '.storymaps-root'
         };
     </script>
+    <!-- StoryMaps presentation engine script -->
     <script id="embed-script" src="https://storymaps.arcgis.com/embed/view"></script>
 </body>
 

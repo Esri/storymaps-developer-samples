@@ -2,7 +2,7 @@
 
 This folder contains a Python script tool that uses the ArcGIS API for Python to inventory the content with your ArcGIS organization and detect relationships between these items and other content beyond. The script records these relationships and reports them as a `csv` file and can additionally visualize them in a network graph.
 
-![This simplified example demonstrates how the connection between items can be visualized in a graph network.](/find-related-items-script/assets/Sample_Graph.jpg)*This simplified example demonstrates how the connection between items can be visualized in a graph network.*
+![This simplified example demonstrates how the connection between items can be visualized in a graph network.](/related-items/assets/Sample_Graph.jpg)*This simplified example demonstrates how the connection between items can be visualized in a graph network.*
 
 ## Features
 
@@ -52,7 +52,7 @@ PORTAL = `https://arcgis.com`
 
 4. **Explore the results**: The tool creates several outputs that can be further explored.
 
-![This simplified example demonstrates how the connection between items can be visualized in a graph network.](/find-related-items-script/assets/Sample_CSV.jpg)*This pivot table demonstrates how the output 'related_items.csv' can be used to inventory items like stories and web maps, but also the content within those items or related to those items.*
+![This simplified example demonstrates how the connection between items can be visualized in a graph network.](/related-items/assets/Sample_CSV.jpg)*This pivot table demonstrates how the output 'related_items.csv' can be used to inventory items like stories and web maps, but also the content within those items or related to those items.*
 
 - The script will create a `related_items.csv` listing each item in the query and various attributes, including item id, owner, title, sharing, type, and related items. This can be turned into a pivot table (see the example below) to help take stock of items and confirm their owner or sharing level.
 

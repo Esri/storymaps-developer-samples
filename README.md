@@ -4,11 +4,11 @@ This repository is intended for sharing a collection of developer-friendly pathw
 
 ## Features
 
-- **[Advanced embedding examples](/storymaps-script-embed-samples/README.md)** demonstrate how to embed stories in a web page using `<script>` tags which offers a variety of pathways for customizing and extending the integration of your stories within your website.
+- **[Advanced embedding examples](/embed/README.md)** demonstrate how to embed stories in a web page using `<script>` tags which offers a variety of pathways for customizing and extending the integration of your stories within your website.
 
-- **[Find related ArcGIS Online items script](/find-related-items-script/README.md)** features a Python tool to inventory and visualize the relationships between items in your organization and beyond.
+- **[Find related ArcGIS Online items script](/related-items/README.md)** features a Python tool to inventory and visualize the relationships between items in your organization and beyond.
 
-- **[Story helper notebooks](/storymaps-helper-notebooks/README.md)** can be run in the ArcGIS Notebooks environment to perform a number of utility functions related to story management, authoring, and more.
+- **[Story helper notebooks](/notebooks/README.md)** can be run in the ArcGIS Notebooks environment to perform a number of utility functions related to story management, authoring, and more.
 
 ## Instructions
 

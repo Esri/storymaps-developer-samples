@@ -4,7 +4,7 @@ You may want to greet readers or preface the story they're about to read. A spla
 
 ## Live sample
 
-[![Splash screen example](./assets/sample_splash_screen.jpg "Splash screen example")](https://storymaps.esri.com/stories/storymaps-script-embed-examples/splash-page/)*[Click to see the live example](https://storymaps.esri.com/stories/storymaps-script-embed-examples/splash-page/)*
+[![Splash screen example](./assets/sample_splash_screen.jpg "Splash screen example")](https://storymaps.esri.com/stories/embed/splash-page/)*[Click to see the live example](https://esri.github.io/storymaps-developer-samples/embed/splash-page/index.html)*
 
 
 ## Usage instructions
@@ -15,6 +15,7 @@ Implementing a splash screen involves:
 - Define a `closeSplashScreen()` function in the HTML page, called by the button that hides the `.splash-overlay`.
 - Define the appearance of the `.splash-overlay` and `.splash-screen` classes in the CSS file.
 - Prevent the main content of the page from scrolling until **the splash screen is dismissed** by adding `overflow: hidden` to the CSS of the `<body class="no-scroll">`.
+- Configure your story for embed.
 
 ### HTML snippets
 
@@ -53,6 +54,24 @@ Implementing a splash screen involves:
       document.body.classList.remove('no-scroll');
     }
   </script>
+```
+
+**Configure your story for embed**: This contains the configuration information required for the embed—namely, the story’s ID and the identifier for the root element.
+```html
+    <!-- Place this root container where you want the story to appear in the page -->
+    <div class="storymaps-root"></div>
+    <!-- This is the config section. The storyId identifies the story to be loaded -->
+    <script>
+      window.storyMapsEmbedConfig = {
+        storyId: '{YOUR-STORY-ID}',
+        rootSelector: '.storymaps-root'
+      };
+    </script>
+    <!-- This final script tag loads the StoryMaps presentation engine  -->
+    <script
+      id="embed-script"
+      src="https://storymaps.arcgis.com/embed/view"
+    ></script>
 ```
 
 ### CSS customizations
