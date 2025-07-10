@@ -4,7 +4,7 @@ You may want to greet readers or preface the story they're about to read. A spla
 
 ## Live sample
 
-[![Splash screen example](./assets/sample_splash_screen.jpg "Splash screen example")](https://storymaps.esri.com/stories/embed/splash-page/)*[Click to see the live example](https://esri.github.io/storymaps-developer-samples/embed/splash-page/index.html)*
+[![Splash screen example](./assets/sample_splash_screen.jpg "Splash screen example")](https://esri.github.io/storymaps-developer-samples/embed/splash-page/index.html)*[Click to see the live example](https://esri.github.io/storymaps-developer-samples/embed/splash-page/index.html)*
 
 
 ## Usage instructions
