@@ -24,7 +24,7 @@ USER ${NB_UID}
 
 # Install arcgis and other dependencies using conda
 RUN conda install -c conda-forge mamba && \
-    mamba install -c esri -c conda-forge arcgis && \
+    mamba install -c esri -c conda-forge arcgis=2.3 && \
     mamba clean --all --yes
 
 # Ensure JupyterLab is installed
