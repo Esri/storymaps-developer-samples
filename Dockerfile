@@ -13,11 +13,16 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Switch back to the jovyan user for Binder compatibility
+# Copy all repository files to the working directory (/home/jovyan)
+COPY . /home/jovyan
+
+# Set ownership to jovyan user for Binder compatibility
+RUN chown -R ${NB_UID}:${NB_GID} /home/jovyan
+
+# Switch back to the jovyan user
 USER ${NB_UID}
 
 # Install arcgis and other dependencies using conda
-# Use mamba for faster dependency resolution
 RUN conda install -c conda-forge mamba && \
     mamba install -c esri -c conda-forge arcgis && \
     mamba clean --all --yes
