@@ -116,6 +116,7 @@ window.storyMapsEmbedConfig = {
 ## Resources
 
 - [GitHub Markdown Reference](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+- [Choreographing the dance of the continents](https://www.esri.com/arcgis-blog/products/arcgis-storymaps/mapping/choreographing-the-dance-of-the-continents)
 
 ## Issues
 
