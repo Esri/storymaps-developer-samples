@@ -5,7 +5,7 @@ window.CLASSIC_TOOLKIT_CONFIG = Object.freeze({
   appVersion: "1.0.1",
   lastUpdatedDate: "2026-08-14",
   lastUpdatedLabel: "August 14, 2026",
-  arcgisPortalUrl: "https://www.arcgis.com",
+  arcgisPortalUrl: "https://story.maps.arcgis.com",
   oauthClientId: "nTrvyGsyggcVkfXi",
   oauthRedirectUri: "./arcgis-oauth-callback.html",
   oauthExpirationMinutes: 120,
