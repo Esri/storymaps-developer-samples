@@ -93,7 +93,7 @@ This creates `dist/classic-storymaps-toolkit.zip`. The ZIP includes `DEPLOYMENT.
 
 The supported conversion targets are Classic Map Tour, Classic Shortlist, Classic Swipe, Classic Map Series, Classic Map Journal, and Classic Cascade.
 
-See `conversion-guide.html` for the author-facing conversion guide, known limitations, and template-specific recipes. Product and implementation decisions are tracked in the repo-level `requirements.md`.
+See `conversion-guide.html` for the author-facing conversion guide, known limitations, and template-specific recipes. Product and implementation decisions are tracked in `docs/requirements.md`.
 
 Shortlist hosted layers and converted StoryMap items are created private. Authors must review, publish, and share both dependencies appropriately. The converter keeps all populated categories and places in one backing feature layer. StoryMaps Builder supports eight visible categories in a categorized tour; for larger Shortlists, duplicate the tour and split the categories between two tours.
 
