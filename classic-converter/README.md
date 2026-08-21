@@ -61,7 +61,7 @@ This creates `dist/classic-storymaps-toolkit.zip`. The ZIP includes `DEPLOYMENT.
 
 ## Current Scope
 
-- Keeps ArcGIS tokens in browser localStorage so Explorer and Converter can share authentication across tabs until the token expires or the user signs out.
+- Keeps ArcGIS tokens in browser localStorage so Explorer and Converter can share authentication across tabs until the token expires or the user signs out; sessionStorage is only a fallback when localStorage is unavailable.
 - Validates tokens with ArcGIS `/community/self` and reads `/portals/self` privileges before offering hosted Shortlist publishing.
 - Accepts a Classic item id, Classic URL, ArcGIS group id, or ArcGIS group URL.
 - Uses `worker.html` as a lean hidden worker for each conversion task.

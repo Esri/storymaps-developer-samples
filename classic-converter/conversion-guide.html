@@ -197,7 +197,7 @@
         <h2 id="before-you-start-title">Before you start</h2>
         <ul>
           <li>Sign in from Classic Story Explorer to search public and private scopes. The resulting short-lived token needs permission to create items.</li>
-          <li>The token stays in browser localStorage and is sent only to ArcGIS REST endpoints. It can be reused in another tab until it expires or you sign out.</li>
+          <li>The token stays in browser localStorage and is sent only to ArcGIS REST endpoints. It can be reused in another tab until it expires or you sign out; sessionStorage is only a fallback when localStorage is unavailable.</li>
           <li>Every converted item is created as a private draft. Publishing and sharing remain manual author decisions.</li>
           <li>Start in <a href="./index.html">Classic Story Explorer</a> if you need to find public Classic items or assemble a batch.</li>
         </ul>

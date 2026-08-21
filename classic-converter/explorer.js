@@ -6,6 +6,8 @@ const OAUTH_REDIRECT_URI = String(CONFIG.oauthRedirectUri || "./arcgis-oauth-cal
 const OAUTH_EXPIRATION_MINUTES = Number(CONFIG.oauthExpirationMinutes || 120);
 const ARCHIVE_VIEWER_URL = String(CONFIG.archiveViewerUrl || "https://classic-story-archive.netlify.app/");
 const AUTH_STORAGE_KEY = "story-explorer:arcgis-auth";
+// Intentionally prefer localStorage so a successful sign-in can be reused across tabs for now.
+// If localStorage is unavailable, fall back to sessionStorage rather than dropping auth entirely.
 const CONVERTER_HANDOFF_KEY = "classic-storymaps:converter-handoff";
 const SCOPE_SUMMARY_COLLAPSED_KEY = "classic-storymaps:scope-summary-collapsed";
 const ITEMS_PER_PAGE = 24;
