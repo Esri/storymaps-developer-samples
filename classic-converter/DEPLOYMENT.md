@@ -84,7 +84,7 @@ Browsers using the site must be able to make HTTPS requests to ArcGIS endpoints,
 - `https://www.arcgis.com/sharing/rest/`
 - `https://storymaps.arcgis.com/`
 
-Converted drafts and related hosted feature layers are created in the ArcGIS account represented by the token. The static host never receives or stores the token separately; it exists in same-origin browser session storage and is sent directly to ArcGIS. Explorer passes it to Converter through that session storage, not through a URL.
+Converted drafts and related hosted feature layers are created in the ArcGIS account represented by the token. The static host never receives or stores the token separately; it lives in browser localStorage and is sent directly to ArcGIS. Explorer passes it to Converter without putting the token in the URL.
 
 ## Updating a deployment
 

@@ -56,11 +56,12 @@ This creates `dist/classic-storymaps-toolkit.zip`. The ZIP includes `DEPLOYMENT.
 - Sorts by modification date, creation date, title, or views.
 - Keeps a selection of up to 10 items while browsing result pages.
 - Opens a side panel with item metadata, access, tags, ArcGIS item, and Classic Archive details.
-- Passes selected item IDs and the signed-in token to Converter through same-origin session storage without exposing credentials in the URL.
+- Passes selected item IDs and the signed-in token to Converter without exposing credentials in the URL.
+- Persists ArcGIS auth in browser localStorage so the signed-in session can be reused across tabs for now.
 
 ## Current Scope
 
-- Keeps ArcGIS tokens in same-origin session storage so Explorer and Converter can share authentication within the current browser tab. Closing the tab clears that browser session.
+- Keeps ArcGIS tokens in browser localStorage so Explorer and Converter can share authentication across tabs until the token expires or the user signs out.
 - Validates tokens with ArcGIS `/community/self` and reads `/portals/self` privileges before offering hosted Shortlist publishing.
 - Accepts a Classic item id, Classic URL, ArcGIS group id, or ArcGIS group URL.
 - Uses `worker.html` as a lean hidden worker for each conversion task.

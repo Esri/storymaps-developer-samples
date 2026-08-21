@@ -16,8 +16,8 @@ The converter must be maintained separately from Story Toolkit. It lives in its 
 ## Authentication
 
 - The user pastes an ArcGIS token.
-- The token is stored in browser memory only.
-- The app must not persist the token in local storage, session storage, cookies, or files.
+- The token is stored in browser localStorage for now so the signed-in session can be reused across tabs.
+- The app must not persist the token in session storage, cookies, or files.
 - The app validates the token with ArcGIS `/community/self`.
 - The app reads the signed-in user's privileges from ArcGIS `/portals/self` using the active token. Hosted Shortlist publishing is allowed only when both `portal:user:createItem` and `portal:publisher:publishFeatures` are present; account type or role labels must not be used as a proxy.
 - The validation result should show username, organization id when available, and token time remaining when ArcGIS returns expiration metadata.
