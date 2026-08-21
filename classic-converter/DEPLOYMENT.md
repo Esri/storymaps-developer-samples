@@ -12,8 +12,8 @@ Classic StoryMaps Toolkit is a static site. It does not need Node.js, a database
    ```
 
 3. Confirm that Explorer can load public Classic story results.
-4. Choose the deployed callback URL, such as `https://YOUR_HOST/OPTIONAL_PATH/arcgis-oauth-callback.html`, and register that exact URL in an ArcGIS OAuth application.
-5. In `config.js`, set that application's client ID as `oauthClientId` and configure `oauthRedirectUri` to resolve to the registered callback URL.
+4. Choose the deployed callback URL `https://YOUR_HOST/arcgis-oauth-callback.html` and register that exact URL in an ArcGIS OAuth application.
+5. In `config.js`, set that application's client ID as `oauthClientId` and keep `oauthRedirectUri` pointed at `/arcgis-oauth-callback.html` for the GitHub Pages deployment.
 6. Leave `storyToolkitHomeUrl` empty for a standalone deployment. Set it to the parent Story Toolkit URL only when these pages are hosted inside that app. The packaged `config.js` already uses the standalone OAuth client ID.
 7. Confirm that your organization permits this host to connect to `https://www.arcgis.com`.
 8. Sign in through Explorer, search a private scope, and hand a non-production item to Converter.
