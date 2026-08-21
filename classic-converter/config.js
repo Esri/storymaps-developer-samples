@@ -6,7 +6,7 @@ window.CLASSIC_TOOLKIT_CONFIG = Object.freeze({
   lastUpdatedDate: "2026-08-14",
   lastUpdatedLabel: "August 14, 2026",
   arcgisPortalUrl: "https://www.arcgis.com",
-  oauthClientId: "FtkoKjKTySJNlOya",
+  oauthClientId: "nTrvyGsyggcVkfXi",
   oauthRedirectUri: "./arcgis-oauth-callback.html",
   oauthExpirationMinutes: 120,
   archiveViewerUrl: "https://classic-story-archive.netlify.app/",
