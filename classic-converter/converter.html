@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classic Story Explorer &amp; Converter | Story Toolkit</title>
+    <meta name="description" content="Convert supported Classic Story Maps into private ArcGIS StoryMaps drafts for author review." />
+    <meta property="og:title" content="Classic Story Explorer &amp; Converter | Story Toolkit" />
+    <meta property="og:description" content="Convert supported Classic Story Maps into private ArcGIS StoryMaps drafts for author review." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="./wand-2.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css?v=20260807-18" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to converter</a>
+
+    <header class="tool-header">
+      <div class="tool-header-inner">
+        <div class="tool-identity">
+          <a class="toolkit-back-icon" href="/" data-story-toolkit-back aria-label="Back to Story Toolkit" hidden><img src="./arrow-left.svg" alt="" /></a>
+          <a class="brand-mark" href="./index.html" aria-label="Classic Story Explorer &amp; Converter home"><img src="./wand-2.svg" alt="" /></a>
+          <div>
+            <div class="title-row">
+              <h1>Classic Story Explorer &amp; Converter</h1>
+              <span class="experimental-badge">Experimental</span>
+            </div>
+            <p class="tool-byline">Move supported Classic stories into editable StoryMaps drafts.</p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <nav class="tool-nav" aria-label="Classic StoryMaps Toolkit">
+            <a href="./index.html">Explorer</a>
+            <a href="./converter.html" aria-current="page">Converter</a>
+            <a href="./conversion-guide.html">Guide</a>
+            <a href="https://survey123.arcgis.com/share/bbd8cab7cff94e0780126a273ea22732?field:app_title=Classic%20Story%20Explorer%20%26%20Converter" target="_blank" rel="noopener noreferrer">Feedback</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="shell">
+      <section class="intro-panel" aria-labelledby="converter-intro-title">
+        <div>
+          <p class="eyebrow">Classic StoryMaps Toolkit</p>
+          <h2 id="converter-intro-title">Convert with a review-first workflow</h2>
+          <p class="lede">Create private drafts from Classic Map Tour, Shortlist, Swipe, Map Series, Map Journal, or Cascade items. Nothing is published automatically.</p>
+        </div>
+        <ol class="workflow-summary" aria-label="Conversion workflow">
+          <li><strong>Connect</strong><span>Use a short-lived ArcGIS token.</span></li>
+          <li><strong>Select</strong><span>Review supported Classic items.</span></li>
+          <li><strong>Convert</strong><span>Open and finish private drafts.</span></li>
+        </ol>
+      </section>
+
+      <aside id="explorerStartCallout" class="start-callout" aria-labelledby="explorer-start-title">
+        <div>
+          <strong id="explorer-start-title">Start in Classic Story Explorer</strong>
+          <p>Sign in there, select the Classic stories you want to convert, then open them in Converter.</p>
+        </div>
+        <a href="./index.html">Open Classic Story Explorer</a>
+      </aside>
+
+      <section id="bulkStepSource" class="panel step-panel">
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">1</span>
+          <div class="section-heading-copy">
+            <h2>Connect ArcGIS and add a source</h2>
+            <p>Paste a token, then add one or more Classic item links or IDs—or an ArcGIS group.</p>
+            <p id="bulkStepSourceSummary" class="step-summary" hidden></p>
+          </div>
+          <button type="button" class="step-edit secondary compact" hidden>Edit</button>
+        </div>
+        <div id="bulkStepSourceBody">
+          <div id="connectedAccount" class="connected-account" hidden>
+            <div>
+              <strong id="connectedAccountName">Connected to ArcGIS</strong>
+              <p>Authentication was passed securely from Classic Story Explorer.</p>
+            </div>
+            <button id="useAnotherTokenButton" type="button" class="secondary compact">Use another account</button>
+          </div>
+          <div id="sourceFormGrid" class="form-grid">
+            <div id="tokenField" class="field">
+              <span class="field-heading">
+                <label for="bulkTokenInput">ArcGIS token</label>
+                <span class="field-actions">
+                  <button id="toggleBulkTokenButton" type="button" class="clear-field-button" aria-pressed="false" aria-label="Show ArcGIS token">Show</button>
+                  <button id="clearBulkTokenButton" type="button" class="clear-field-button" aria-label="Clear ArcGIS token">Clear</button>
+                </span>
+              </span>
+              <input id="bulkTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="tokenHelp" />
+              <small id="tokenHelp">Use a short-lived token with permission to create items. The converter validates it automatically.</small>
+            </div>
+            <div class="field">
+              <span class="field-heading">
+                <label for="groupInput">Classic items or ArcGIS group</label>
+                <button id="clearGroupButton" type="button" class="clear-field-button" aria-label="Clear Classic source">Clear</button>
+              </span>
+              <input id="groupInput" type="text" inputmode="url" autocomplete="off" placeholder="Paste a URL, 32-character ID, or a comma-separated list" aria-describedby="sourceHelp" />
+              <small id="sourceHelp">Need to find an item first? <a href="./index.html">Search Classic Story Explorer</a>.</small>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="loadGroupButton" type="button">Analyze</button>
+          </div>
+          <div id="bulkStatus" class="status neutral" role="status" aria-live="polite" hidden></div>
+        </div>
+      </section>
+
+      <section id="bulkStepItems" class="panel step-panel" hidden>
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">2</span>
+          <div class="section-heading-copy">
+            <h2>Choose items to convert</h2>
+            <p>Supported items are selected by default. Review any existing replacements before continuing.</p>
+            <p id="bulkStepItemsSummary" class="step-summary" hidden></p>
+          </div>
+          <button type="button" class="step-edit secondary compact" hidden>Edit</button>
+        </div>
+        <div id="bulkStepItemsBody">
+          <p class="template-note">
+            <strong>Supported Classic types:</strong>
+            Map Tour, Shortlist, Swipe, Map Series, Map Journal, and Cascade.
+          </p>
+          <div id="selectionToolbar" class="selection-toolbar" hidden>
+            <p id="selectionSummary">No items loaded.</p>
+            <div class="selection-actions">
+              <button id="selectAllButton" type="button" class="secondary compact">Select all supported</button>
+              <button id="clearSelectionButton" type="button" class="secondary compact">Clear selection</button>
+            </div>
+          </div>
+          <div class="bulk-table-wrap" tabindex="0" aria-label="Convertible Classic items">
+            <table class="bulk-table">
+              <thead>
+                <tr>
+                  <th scope="col">Select</th>
+                  <th scope="col">Classic item</th>
+                  <th scope="col">Template</th>
+                </tr>
+              </thead>
+              <tbody id="bulkRows">
+                <tr>
+                  <td colspan="3" class="empty">Add a source to see Classic items.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="shortlistCapabilityNotice" class="status warn" role="status" hidden></div>
+          <div class="actions actions-between">
+            <p class="browser-run-note">Keep this tab open until every selected item finishes.</p>
+            <button id="createSelectedButton" type="button" disabled>Convert selected stories</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="bulkStepResults" class="panel step-panel" hidden>
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">3</span>
+          <div class="section-heading-copy">
+            <h2>Review results</h2>
+            <p>Open every created draft in StoryMaps Builder and check warnings before publishing.</p>
+          </div>
+        </div>
+        <div class="bulk-table-wrap" tabindex="0" aria-label="Conversion results">
+          <table class="bulk-table results-table">
+            <thead>
+              <tr>
+                <th scope="col">Classic item</th>
+                <th scope="col">Template</th>
+                <th scope="col">Status</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Result</th>
+              </tr>
+            </thead>
+            <tbody id="bulkResultRows">
+              <tr>
+                <td colspan="5" class="empty">Convert selected stories to see results.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button id="startAnotherButton" type="button" class="secondary">Start another conversion</button>
+        </div>
+      </section>
+
+      <div id="workerHost" aria-hidden="true"></div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="app-footer-copy">
+        <p>This is a free, community-built project—not an official Esri product. These tools are not covered by Esri Technical Support. Use them at your own risk. It does not delete or modify any existing stories.</p>
+        <p class="app-footer-meta" data-classic-app-meta></p>
+      </div>
+    </footer>
+
+    <script src="./config.js?v=20260814-2"></script>
+    <script src="./bulk.js?v=20260807-8" type="module"></script>
+  </body>
+</html>

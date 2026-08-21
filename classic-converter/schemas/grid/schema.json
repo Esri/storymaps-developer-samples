@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Grid Block",
+  "description": "A block that arranges child nodes in rows and columns",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "grid"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "cols": {
+          "type": "number"
+        },
+        "rows": {
+          "type": "number"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": ["cols", "rows", "items"],
+      "additionalProperties": true
+    },
+    "config": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["type", "data", "children"],
+  "additionalProperties": true
+}

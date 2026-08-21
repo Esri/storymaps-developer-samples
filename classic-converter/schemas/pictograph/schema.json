@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pictograph Block",
+  "type": "object",
+  "properties": {
+    "type": { "const": "pictograph" },
+    "data": {
+      "type": "object",
+      "properties": {
+        "numActiveIcons": { "type": "number", "minimum": 0 },
+        "numInactiveIcons": { "type": "number", "minimum": 0 },
+        "iconsPerRow": { "type": "number", "minimum": 1 },
+        "iconsPerRowConfig": { "type": "string" },
+        "title": { "type": "string" },
+        "legend": { "type": "string" },
+        "icon": { "type": "string" },
+        "layoutType": { "type": "string" }
+      },
+      "required": ["numActiveIcons"],
+      "additionalProperties": true
+    },
+    "config": { "type": ["object", "null"], "additionalProperties": true }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": true
+}

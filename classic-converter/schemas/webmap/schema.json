@@ -1,0 +1,375 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Webmap Block",
+  "description": "A block that is used for both ArcGIS Online web maps and web scenes",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "webmap"
+    },
+    "config": {
+      "title": "Config",
+      "description": "Config object for the Webmap Block",
+      "type": "object",
+      "properties": {
+        "size": {
+          "title": "Block Size",
+          "description": "Size of the Webmap block layout",
+          "type": "string",
+          "default": "standard",
+          "enum": ["standard", "wide", "full", "float"]
+        },
+        "floatAlignment": {
+          "title": "Float Alignment",
+          "description": "Alignment of the block when the Webmap block size is 'float'",
+          "default": "start",
+          "type": "string",
+          "enum": ["start", "end"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Webmap block",
+      "type": "object",
+      "properties": {
+        "map": {
+          "title": "Map",
+          "description": "Block resource ID",
+          "type": "string"
+        },
+        "screenshots": {
+          "title": "Screenshots",
+          "description": "Map screenshots, with size mapped to resource ID",
+          "type": "object"
+        },
+        "mapLayers": {
+          "title": "Map Layers",
+          "description": "Array of layers in the map",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StoryMapLayer"
+          }
+        },
+        "bookmarkSelection": {
+          "title": "Bookmark Selection",
+          "description": "Property that identifies the selected bookmark (name)",
+          "type": "string"
+        },
+        "slideSelection": {
+          "title": "Slide Selection",
+          "description": "Property that identifies the selected slide (id)",
+          "type": "string"
+        },
+        "isShowingLegend": {
+          "title": "Is Showing Legend Widget",
+          "description": "Whether the legend widget is showing",
+          "type": "boolean"
+        },
+        "legendPinned": {
+          "title": "Is Legend Pinned",
+          "description": "Whether the legend widget should be open when loaded",
+          "type": "boolean"
+        },
+        "search": {
+          "title": "Search Widget",
+          "description": "Whether the search widget is toggled on",
+          "type": "boolean"
+        },
+        "locate": {
+          "title": "Locate Widget",
+          "description": "Whether the locate widget is toggled on",
+          "type": "boolean"
+        },
+        "navigation": {
+          "title": "Navigation Widget",
+          "description": "Whether the navigation widget is toggled on",
+          "type": "boolean"
+        },
+        "timeSlider": {
+          "title": "Time Slider",
+          "description": "Whether the time slider is toggled on (webmap must contain layer with time enabled data)",
+          "type": "boolean"
+        },
+        "overviewMap": {
+          "title": "OverviewMap Widget",
+          "description": "Whether the overviewMap widget is enabled",
+          "type": "boolean"
+        },
+        "scaleBar": {
+          "title": "ScaleBar Widget",
+          "description": "Whether the scaleBar is enabled",
+          "type": "boolean"
+        },
+        "popupDocked": {
+          "title": "Is Popup Docked",
+          "description": "Whether the popup widget is docked on the corner of the map view",
+          "type": "boolean"
+        },
+        "pinnedPopupInfo": {
+          "title": "Pinned Popup Info",
+          "description": "Information about the currently selected feature for reopening the popup at a location",
+          "$ref": "#/definitions/PopupInfo"
+        },
+        "viewPlacement": {
+          "title": "View Placement",
+          "description": "Specifies how the view is placed",
+          "type": "string",
+          "enum": ["extent", "viewpoint"]
+        },
+        "subtype": {
+          "title": "Subtype",
+          "description": "Subtype of the webmap, currently only 'ready-to-use' is allowed",
+          "type": "string",
+          "enum": ["ready-to-use"]
+        },
+        "alt": {
+          "title": "Alt Text",
+          "description": "The alternative text for the map",
+          "type": "string"
+        },
+        "caption": {
+          "title": "Caption Text",
+          "description": "The caption text for the map",
+          "type": "string"
+        },
+        "customCaptionColors": {
+          "title": "Custom Caption Colors",
+          "description": "Deprecated: This was only needed for Quill; it is no longer being used in Slate.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "extent": {
+          "title": "Extent",
+          "description": "The extent of the map",
+          "type": "object",
+          "properties": {
+            "spatialReference": { "$ref": "#/definitions/SpatialReference" },
+            "xmin": { "type": "number" },
+            "ymin": { "type": "number" },
+            "xmax": { "type": "number" },
+            "ymax": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "center": {
+          "title": "Center Point",
+          "description": "The center of the map (desktop only)",
+          "type": "object",
+          "properties": {
+            "spatialReference": { "$ref": "#/definitions/SpatialReference" },
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "zoom": {
+          "title": "Zoom Level",
+          "description": "Zoom level for the map",
+          "type": "number"
+        },
+        "viewpoint": {
+          "title": "Viewpoint",
+          "description": "Viewpoint for the map",
+          "type": "object",
+          "properties": {
+            "rotation": { "type": "number" },
+            "scale": { "type": "number" },
+            "targetGeometry": {
+              "type": "object",
+              "properties": {
+                "spatialReference": { "$ref": "#/definitions/SpatialReference" },
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "z": { "type": "number" }
+              }
+            },
+            "camera": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "spatialReference": { "$ref": "#/definitions/SpatialReference" },
+                    "x": { "type": "number" },
+                    "y": { "type": "number" },
+                    "z": { "type": "number" }
+                  }
+                },
+                "heading": { "type": "number" },
+                "tilt": { "type": "number" }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "lightingDate": {
+          "title": "Lighting Date",
+          "description": "Lighting Date for the lighting in the webscene, not applicable for webmap",
+          "oneOf": [{ "type": "number" }, { "type": "string", "enum": ["virtual"] }]
+        },
+        "directShadows": {
+          "title": "Direct Shadows",
+          "description": "Whether to show direct shadows cast by the light source in the webscene, not applicable for webmap",
+          "type": "boolean"
+        },
+        "weather": {
+          "title": "Weather Info",
+          "description": "Weather info for the webscene, not applicable for webmap",
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "default": "sunny" },
+            "cloudCover": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "ground": {
+          "title": "Ground Info",
+          "description": "Ground info - opacity for the webscene, not applicable for webmap",
+          "type": "object",
+          "properties": {
+            "opacity": { "type": "number", "default": 1 }
+          },
+          "additionalProperties": true
+        },
+        "visibleLayers": {
+          "title": "Visible Layers",
+          "description": "Array of visible layer IDs and sub layer IDs in the map. Only available in webscene",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "sublayerIds": {
+                "type": "array",
+                "items": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "baseMap": {
+          "title": "Base Map",
+          "description": "Base map layers for the view. Only available in webscene",
+          "type": "object",
+          "properties": {
+            "baseMapLayers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "opacity": { "type": "number" },
+                  "title": { "type": "string" },
+                  "visibility": { "type": "boolean" },
+                  "itemId": { "type": "string" },
+                  "layerType": { "type": "string" },
+                  "styleUrl": { "type": "string" }
+                }
+              }
+            },
+            "groundLayers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "customParameters": { "type": "string" },
+                  "id": { "type": "string" },
+                  "itemId": { "type": "string" },
+                  "layerDefinition": { "type": "object" },
+                  "layerType": { "type": "string" },
+                  "listMode": { "type": "string" },
+                  "modifications": { "type": "string" },
+                  "opacity": { "type": "number" },
+                  "path": { "type": "number" },
+                  "title": { "type": "string" },
+                  "url": { "type": "string" },
+                  "visibility": { "type": "boolean" },
+                  "visibilityTimeExtent": { "type": "array" }
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "timeExtent": {
+          "title": "Time Extent",
+          "description": "Custom time wxtent properties that will override view's time extent",
+          "type": "object",
+          "properties": {
+            "start": { "type": "string" },
+            "end": { "type": "string" }
+          }
+        },
+        "slice": {
+          "title": "Slice",
+          "description": "Slice properties for the view. Only available in webscene",
+          "type": "object",
+          "properties": {
+            "visible": { "type": "boolean" },
+            "fallback": { "type": "object" }
+          },
+          "required": ["visible"]
+        },
+        "focusAreas": {
+          "title": "Focus Areas",
+          "description": "Focus areas for the view",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["map"],
+      "additionalProperties": false
+    },
+    "dependents": {
+      "type": "object",
+      "properties": {
+        "offline": { "type": "string" }
+      }
+    }
+  },
+  "required": ["type", "data"],
+  "definitions": {
+    "StoryMapLayer": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "visible": { "type": "boolean" }
+      },
+      "required": ["id", "title", "visible"]
+    },
+    "PopupInfo": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "object",
+          "properties": {
+            "spatialReference": { "$ref": "#/definitions/SpatialReference" },
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          },
+          "required": ["spatialReference", "x", "y"]
+        },
+        "idFieldName": { "type": "string" },
+        "idFieldValue": { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+        "layerId": {
+          "oneOf": [{ "type": "string" }, { "type": "number" }]
+        }
+      },
+      "required": ["location", "idFieldValue", "layerId"]
+    },
+    "SpatialReference": {
+      "type": "object",
+      "properties": {
+        "latestWkid": { "type": "number" },
+        "wkid": { "type": "number" }
+      },
+      "required": ["wkid"]
+    }
+  },
+  "additionalProperties": false
+}

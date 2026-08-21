@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tour-Map Block",
+  "description": "A block that renders the tour map",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "tour-map"
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Tour-Map block",
+      "type": "object",
+      "properties": {
+        "basemap": {
+          "title": "Basemap",
+          "description": "Basemap option",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        "locate": {
+          "title": "Locate",
+          "description": "Is the Locate widget toggled on for the tour-map",
+          "type": "boolean"
+        },
+        "defaultScale": {
+          "title": "Default Scale",
+          "description": "The default scale for tour points",
+          "type": "number"
+        },
+        "mode": {
+          "title": "Mode",
+          "description": "Map mode",
+          "type": "string",
+          "enum": ["2d", "3d"]
+        },
+        "progress": {
+          "title": "Progress",
+          "description": "Visibility of the tour progress line",
+          "type": "boolean"
+        },
+        "legend": {
+          "title": "Legend",
+          "description": "Whether to show the legend",
+          "type": "boolean"
+        },
+        "legendPinned": {
+          "title": "Legend Pinned",
+          "description": "Whether the legend is pinned",
+          "type": "boolean"
+        },
+        "overviewMap": {
+          "title": "Overview Map",
+          "description": "Whether to show the overview map",
+          "type": "boolean"
+        },
+        "featureStyles": {
+          "title": "Is Using Feature Styles",
+          "description": "Whether the map is using the feature layer styles",
+          "type": "boolean"
+        },
+        "screenshots": {
+          "type": "object",
+          "properties": {
+            "PRINT": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "alt": {
+          "title": "Alt Text",
+          "description": "Alternative text",
+          "type": "string"
+        },
+        "geometries": {
+          "title": "All Geometries",
+          "description": "A mapping of geometry IDs to TourMapGeometry objects.",
+          "type": "object",
+          "additionalProperties": {
+            "title": "TourMapGeometry",
+            "description": "A geometry object for the tour map, extending Drawing with optional scale and viewpoint.",
+            "type": "object",
+            "properties": {
+              "id": {
+                "title": "ID",
+                "description": "Unique ID for drawing",
+                "type": "string"
+              },
+              "type": {
+                "title": "Drawing Type",
+                "description": "Drawing type",
+                "type": "string"
+              },
+              "nodes": {
+                "title": "Nodes",
+                "description": "Array of drawing nodes",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/DrawingNode"
+                }
+              },
+              "data": {
+                "title": "Extra Drawing Data",
+                "description": "Extra drawing data",
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "title": "Content",
+                    "description": "Content of text-leaderline AKA label",
+                    "type": "string"
+                  },
+                  "width": {
+                    "title": "Width",
+                    "description": "Width of text-leaderline's text box in px",
+                    "type": "number"
+                  },
+                  "height": {
+                    "title": "Height",
+                    "description": "Height of text-leaderline's text box in px",
+                    "type": "number"
+                  },
+                  "index": {
+                    "title": "Index",
+                    "description": "Index for numbered point",
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "style": {
+                "title": "Style",
+                "description": "@deprecated",
+                "type": "number"
+              },
+              "isSelected": {
+                "title": "Is Selected",
+                "description": "@deprecated not currently used",
+                "type": "boolean"
+              },
+              "isOver": {
+                "title": "Is Over",
+                "description": "@deprecated not currently used",
+                "type": "boolean"
+              },
+              "isHidden": {
+                "title": "Is Hidden",
+                "description": "@deprecated not currently used",
+                "type": "boolean"
+              },
+              "styles": {
+                "title": "Styles",
+                "description": "Styles for the drawing",
+                "type": "object"
+              },
+              "scale": {
+                "title": "Scale",
+                "description": "Honored in 2d",
+                "type": "number"
+              },
+              "viewpoint": {
+                "title": "Viewpoint",
+                "description": "Honored in 3d",
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "required": ["id", "type", "nodes"]
+          }
+        }
+      }
+    }
+  },
+  "required": ["type", "data"],
+  "definitions": {
+    "DrawingNode": {
+      "title": "DrawingNode",
+      "description": "Node of a drawing.",
+      "type": "object",
+      "properties": {
+        "long": {
+          "title": "Longitude",
+          "description": "Longitude value",
+          "type": "number"
+        },
+        "lat": {
+          "title": "Latitude",
+          "description": "Latitude value",
+          "type": "number"
+        },
+        "sx": {
+          "title": "Screen X",
+          "description": "Screen position x",
+          "type": "number"
+        },
+        "sy": {
+          "title": "Screen Y",
+          "description": "Screen position y",
+          "type": "number"
+        },
+        "proX": {
+          "title": "Projected X",
+          "description": "Needed for wrapping/projection",
+          "type": "number"
+        },
+        "proY": {
+          "title": "Projected Y",
+          "description": "Needed for wrapping/projection",
+          "type": "number"
+        }
+      },
+      "required": ["long", "lat"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

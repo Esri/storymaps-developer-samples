@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Quiz Block",
+  "type": "object",
+  "properties": {
+    "type": { "const": "quiz" },
+    "children": { "type": "array", "items": { "type": "string" } },
+    "config": {
+      "type": ["object", "null"],
+      "properties": {
+        "resultScreen": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": ["type", "children"],
+  "additionalProperties": true
+}

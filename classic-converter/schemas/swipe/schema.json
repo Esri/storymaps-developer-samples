@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Swipe Block",
+  "description": "A block that renders the UI to compare two maps or two images",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "swipe"
+    },
+    "config": {
+      "title": "Config",
+      "description": "Config object for the Swipe block",
+      "type": "object",
+      "properties": {
+        "size": {
+          "title": "Swipe Block Size",
+          "description": "Size of the block layout",
+          "type": "string",
+          "default": "standard",
+          "enum": ["standard", "wide", "full"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Swipe block",
+      "type": "object",
+      "properties": {
+        "caption": {
+          "title": "Caption Text",
+          "description": "The caption text for the map",
+          "type": "string"
+        },
+        "customCaptionColors": {
+          "title": "Custom Caption Colors",
+          "description": "Deprecated: This was only needed for Quill; it is no longer being used in Slate.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "alt": {
+          "title": "Alt Text",
+          "description": "The alternative text for the map",
+          "type": "string"
+        },
+        "navigation": {
+          "title": "Navigation Widget",
+          "description": "Whether the navigation widget is toggled on",
+          "type": "boolean"
+        },
+        "search": {
+          "title": "Search Widget",
+          "description": "Whether the search widget is toggled on",
+          "type": "boolean"
+        },
+        "locate": {
+          "title": "Locate Widget",
+          "description": "Whether the locate widget is toggled on",
+          "type": "boolean"
+        },
+        "legend": {
+          "title": "Legend Widget",
+          "description": "Indicates the child map block(s) whose legends should be displayed",
+          "type": "array",
+          "maxItems": 2,
+          "items": { "type": "string" }
+        },
+        "contents": {
+          "title": "Contents",
+          "description": "The IDs of the two child blocks (maps or images) to be used in the swipe comparison",
+          "type": "object",
+          "properties": {
+            "0": { "type": "string" },
+            "1": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "viewPlacement": {
+          "title": "View Placement",
+          "description": "Specifies how the view is placed",
+          "type": "string",
+          "enum": ["extent", "viewpoint"]
+        },
+        "legendPinned": {
+          "title": "Is Legend Pinned",
+          "description": "Whether the legend widget should be open when loaded",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["type"],
+  "additionalProperties": false
+}

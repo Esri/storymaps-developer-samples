@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "360 Image Block",
+  "description": "A block that renders a panoramic 360 image",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "image360"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "image360": {
+          "type": "string"
+        }
+      },
+      "required": ["image360"],
+      "additionalProperties": true
+    },
+    "config": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": true
+}

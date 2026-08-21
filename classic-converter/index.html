@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classic Story Explorer &amp; Converter | Story Toolkit</title>
+    <meta name="description" content="Find public Classic Story Maps, review migration signals, and send supported items to the Classic Story Converter." />
+    <meta property="og:title" content="Classic Story Explorer &amp; Converter | Story Toolkit" />
+    <meta property="og:description" content="Find public Classic Story Maps and prepare supported items for conversion." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="./wand-2.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css?v=20260807-18" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to search</a>
+
+    <header class="tool-header">
+      <div class="tool-header-inner">
+        <div class="tool-identity">
+          <a class="toolkit-back-icon" href="/" data-story-toolkit-back aria-label="Back to Story Toolkit" hidden><img src="./arrow-left.svg" alt="" /></a>
+          <a class="brand-mark" href="./index.html" aria-label="Classic Story Explorer &amp; Converter home"><img src="./wand-2.svg" alt="" /></a>
+          <div>
+            <div class="title-row">
+              <h1>Classic Story Explorer &amp; Converter</h1>
+              <span class="experimental-badge">Experimental</span>
+            </div>
+            <p class="tool-byline">Find. Assess. Convert. Move Classic stories forward.</p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <nav class="tool-nav" aria-label="Classic StoryMaps Toolkit">
+            <a href="./index.html" aria-current="page">Explorer</a>
+            <a href="./converter.html?manual=1">Converter</a>
+            <a href="./conversion-guide.html">Guide</a>
+            <a href="https://survey123.arcgis.com/share/bbd8cab7cff94e0780126a273ea22732?field:app_title=Classic%20Story%20Explorer%20%26%20Converter" target="_blank" rel="noopener noreferrer">Feedback</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content" class="shell explorer-shell">
+      <section class="explorer-hero" aria-labelledby="explorer-title">
+        <div>
+          <h2 id="explorer-title">Find Classic stories worth moving forward</h2>
+          <p class="lede">Search by topic, title, owner, or item ID. Select up to 10 supported items and send them directly to the converter.</p>
+        </div>
+        <div class="hero-stat" aria-label="Supported templates">
+          <strong>6</strong>
+          <span>supported Classic templates</span>
+        </div>
+      </section>
+
+      <section id="authStatus" class="auth-status account-panel" aria-labelledby="authStatusTitle">
+          <div id="authStatusMessage" role="status" aria-live="polite">
+            <h2 id="authStatusTitle">Sign in to unlock private stories</h2>
+            <p id="authStatusDescription">Search content you own or can access through your organization, then open selected items in Converter.</p>
+          </div>
+          <div class="auth-actions">
+            <button id="arcgisSignInButton" type="button" class="compact">Sign in to ArcGIS</button>
+            <button id="arcgisSignOutButton" type="button" class="secondary compact" hidden>Sign Out</button>
+          </div>
+          <section id="classicScopeSummary" class="classic-scope-summary" aria-labelledby="classicScopeSummaryTitle" aria-busy="false" hidden>
+            <div class="classic-scope-summary-heading">
+              <div>
+                <h3 id="classicScopeSummaryTitle">Classic content overview</h3>
+                <p>Counts all supported Classic stories in each signed-in scope.</p>
+              </div>
+              <button id="classicScopeSummaryToggle" class="secondary compact classic-scope-summary-toggle" type="button" aria-expanded="true" aria-controls="classicScopeSummaryContent">Hide stats</button>
+            </div>
+            <div id="classicScopeSummaryContent">
+              <dl class="classic-scope-counts">
+                <div>
+                  <dt>My content</dt>
+                  <dd id="myContentClassicCount" class="classic-scope-count">—</dd>
+                  <dd id="myContentClassicDescription" class="classic-scope-description">Owned by you</dd>
+                  <dd class="classic-replacement-mix">
+                    <button id="myContentNeedsReplacementFilter" class="classic-replacement-filter needs-replacement" type="button" data-scope="my-content" data-replacement="without" aria-label="Show My content Classic stories that need a replacement">
+                      <span>Needs replacement</span>
+                      <strong id="myContentNeedsReplacementCount">—</strong>
+                    </button>
+                    <button id="myContentReplacementSetFilter" class="classic-replacement-filter replacement-set" type="button" data-scope="my-content" data-replacement="with" aria-label="Show My content Classic stories with a replacement set">
+                      <span>Replacement set</span>
+                      <strong id="myContentReplacementSetCount">—</strong>
+                    </button>
+                  </dd>
+                </div>
+                <div id="organizationClassicCountCard">
+                  <dt>My organization</dt>
+                  <dd id="organizationClassicCount" class="classic-scope-count">—</dd>
+                  <dd id="organizationClassicDescription" class="classic-scope-description">All owners in your organization</dd>
+                  <dd class="classic-replacement-mix">
+                    <button id="organizationNeedsReplacementFilter" class="classic-replacement-filter needs-replacement" type="button" data-scope="my-organization" data-replacement="without" aria-label="Show My organization Classic stories that need a replacement">
+                      <span>Needs replacement</span>
+                      <strong id="organizationNeedsReplacementCount">—</strong>
+                    </button>
+                    <button id="organizationReplacementSetFilter" class="classic-replacement-filter replacement-set" type="button" data-scope="my-organization" data-replacement="with" aria-label="Show My organization Classic stories with a replacement set">
+                      <span>Replacement set</span>
+                      <strong id="organizationReplacementSetCount">—</strong>
+                    </button>
+                  </dd>
+                </div>
+                <div id="organizationSharingMixCard" class="classic-sharing-card">
+                  <dt>Sharing mix</dt>
+                  <dd class="classic-scope-description">Classic stories in My organization.</dd>
+                  <dd class="classic-sharing-mix">
+                    <div><span>Public</span><strong id="organizationPublicClassicCount">—</strong></div>
+                    <div><span>Organization</span><strong id="organizationOrgClassicCount">—</strong></div>
+                    <div><span>Shared</span><strong id="organizationSharedClassicCount">—</strong></div>
+                    <div><span>Private</span><strong id="organizationPrivateClassicCount">—</strong></div>
+                  </dd>
+                </div>
+              </dl>
+              <p id="classicScopeSummaryError" class="classic-scope-summary-error" hidden></p>
+            </div>
+          </section>
+      </section>
+
+      <section class="search-panel" aria-label="Search Classic Story Maps">
+        <form id="classicSearchForm" class="search-form" role="search">
+          <label class="field search-field">
+            <span id="classicSearchLabel">Search public Classic Story Maps</span>
+            <input id="classicSearchInput" type="search" autocomplete="off" placeholder="Try climate, owner:username, or an item ID" />
+          </label>
+          <button id="classicSearchButton" type="submit">Search</button>
+        </form>
+        <div class="filter-grid">
+          <label class="field">
+            <span>Search scope</span>
+            <select id="scopeFilter">
+              <option value="public">Public Classic stories</option>
+              <option value="my-content" disabled>My content — sign in</option>
+              <option value="my-organization" disabled>My organization — sign in</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Template</span>
+            <select id="templateFilter">
+              <option value="all">All supported templates</option>
+              <option value="maptour">Map Tour</option>
+              <option value="shortlist">Shortlist</option>
+              <option value="swipespyglass">Swipe</option>
+              <option value="mapseries">Map Series</option>
+              <option value="mapjournal">Map Journal</option>
+              <option value="cascade">Cascade</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Replacement status</span>
+            <select id="replacementFilter">
+              <option value="all">Any status</option>
+              <option value="without">Needs a replacement</option>
+              <option value="with">Replacement configured</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Sort by</span>
+            <select id="sortFilter">
+              <option value="modified">Recently updated</option>
+              <option value="views">Most viewed</option>
+              <option value="title">Title A–Z</option>
+              <option value="created">Newest created</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section id="selectionBar" class="selection-bar" aria-labelledby="selection-title" hidden>
+        <div>
+          <strong id="selection-title"><span id="selectedCount">0</span> selected</strong>
+          <p>Select items from their details panel. Sign in is required before opening Converter.</p>
+        </div>
+        <div class="actions">
+          <button id="clearExplorerSelection" type="button" class="secondary compact" disabled>Clear</button>
+          <a id="convertSelectionLink" class="button-link disabled" href="#" aria-disabled="true">Open in Converter</a>
+        </div>
+      </section>
+
+      <div class="results-heading">
+        <div>
+          <h2>Search results</h2>
+          <p id="searchSummary" role="status" aria-live="polite">Loading public Classic stories…</p>
+        </div>
+      </div>
+
+      <div id="searchError" class="status bad" role="alert" hidden></div>
+      <section id="classicResults" class="result-grid" aria-label="Classic Story Map results" aria-busy="true"></section>
+
+      <nav class="pagination" aria-label="Search result pages">
+        <button id="previousPageButton" type="button" class="secondary" disabled>Previous</button>
+        <span id="pageLabel">Page 1</span>
+        <button id="nextPageButton" type="button" class="secondary" disabled>Next</button>
+      </nav>
+    </main>
+
+    <div id="detailBackdrop" class="detail-backdrop" hidden></div>
+    <aside id="itemDetailPanel" class="detail-panel" aria-labelledby="detailTitle" aria-modal="true" role="dialog" hidden>
+      <div class="detail-panel-header">
+        <div>
+          <p class="eyebrow">Classic item details</p>
+          <h2 id="detailTitle">Classic Story Map</h2>
+        </div>
+        <button id="closeDetailButton" type="button" class="secondary compact" aria-label="Close item details">Close</button>
+      </div>
+      <div id="detailPanelBody" class="detail-panel-body"></div>
+    </aside>
+
+    <footer class="app-footer">
+      <div class="app-footer-copy">
+        <p>This is a free, community-built project—not an official Esri product. These tools are not covered by Esri Technical Support. Use them at your own risk. It does not delete or modify any existing stories.</p>
+        <p class="app-footer-meta" data-classic-app-meta></p>
+      </div>
+      <a href="./conversion-guide.html">Read the conversion guide</a>
+    </footer>
+
+    <script src="./config.js?v=20260814-2"></script>
+    <script src="./explorer.js?v=20260807-19" type="module"></script>
+  </body>
+</html>
