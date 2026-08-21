@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classic Story Maps Conversion Guide</title>
+    <meta name="description" content="Review Classic Story Maps conversion behavior, supported templates, and author-review notes." />
+    <meta property="og:title" content="Classic Story Maps Conversion Guide" />
+    <meta property="og:description" content="Review Classic Story Maps conversion behavior, supported templates, and author-review notes." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://esri.github.io/storymaps-developer-samples/classic-converter/conversion-guide.html" />
+    <meta property="og:image" content="https://esri.github.io/storymaps-developer-samples/classic-converter/icon.png" />
+    <meta property="og:image:width" content="536" />
+    <meta property="og:image:height" content="486" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Classic Story Maps Conversion Guide" />
+    <meta name="twitter:description" content="Review Classic Story Maps conversion behavior, supported templates, and author-review notes." />
+    <meta name="twitter:image" content="https://esri.github.io/storymaps-developer-samples/classic-converter/icon.png" />
+    <link rel="icon" href="./icon.png" type="image/png" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f7f8;
+        --panel: #ffffff;
+        --text: #202326;
+        --muted: #5f666d;
+        --border: #d6dbe0;
+        --accent: #0079c1;
+        --code: #eef3f7;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1f2022;
+          --panel: #292a2d;
+          --text: #f4f4f4;
+          --muted: #b6bbc1;
+          --border: #494c50;
+          --accent: #4db8ff;
+          --code: #34383c;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.55;
+      }
+
+      main {
+        width: min(960px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 40px 0 64px;
+      }
+
+      header,
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+      }
+
+      section {
+        margin-top: 18px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        line-height: 1.2;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+      }
+
+      h2 {
+        font-size: 1.35rem;
+      }
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      p {
+        margin: 0.8rem 0 0;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      ul {
+        margin: 0.75rem 0 0;
+        padding-left: 1.25rem;
+      }
+
+      li + li {
+        margin-top: 0.4rem;
+      }
+
+      code {
+        background: var(--code);
+        border-radius: 4px;
+        padding: 0.1rem 0.3rem;
+      }
+
+      .lede {
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 760px;
+      }
+
+      .toc {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        list-style: none;
+        padding: 0;
+      }
+
+      .toc a,
+      .card {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        text-decoration: none;
+      }
+
+      .toc a:hover {
+        border-color: var(--accent);
+      }
+
+      .recipe-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .label {
+        color: var(--muted);
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .value {
+        display: block;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+    </style>
+    <link rel="stylesheet" href="./styles.css?v=20260807-18" />
+  </head>
+  <body class="guide-page">
+    <a class="skip-link" href="#guide-content">Skip to guide</a>
+    <header class="tool-header">
+      <div class="tool-header-inner">
+        <div class="tool-identity">
+          <a class="toolkit-back-icon" href="/" data-story-toolkit-back aria-label="Back to Story Toolkit" hidden><img src="./arrow-left.svg" alt="" /></a>
+          <a class="brand-mark" href="./index.html" aria-label="Classic StoryMaps Toolkit home"><img src="./icon.png" alt="" /></a>
+          <div>
+            <div class="title-row">
+              <div class="tool-title">Conversion Guide</div>
+              <span class="experimental-badge">Experimental</span>
+            </div>
+            <p class="tool-byline">What is preserved, transformed, and left for author review.</p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <nav class="tool-nav" aria-label="Classic StoryMaps Toolkit">
+            <a href="./index.html">Explorer</a>
+            <a href="./converter.html?manual=1">Converter</a>
+            <a href="./conversion-guide.html" aria-current="page">Guide</a>
+            <a href="https://survey123.arcgis.com/share/bbd8cab7cff94e0780126a273ea22732?field:app_title=Classic%20Story%20Explorer%20%26%20Converter" target="_blank" rel="noopener noreferrer">Feedback</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <main id="guide-content" class="guide-main">
+      <header>
+        <h1>Classic Story Maps Conversion Guide</h1>
+        <p class="lede">
+          This guide explains how Story Toolkit converts retired Classic Story Maps into ArcGIS StoryMaps drafts. It focuses on common rules, what is preserved, and the recipe used for each Classic template.
+        </p>
+      </header>
+
+      <section id="before-you-start" aria-labelledby="before-you-start-title">
+        <h2 id="before-you-start-title">Before you start</h2>
+        <ul>
+          <li>Sign in from Classic Story Explorer to search public and private scopes. The resulting short-lived token needs permission to create items.</li>
+          <li>The token stays in browser localStorage and is sent only to ArcGIS REST endpoints. It can be reused in another tab until it expires or you sign out; sessionStorage is only a fallback when localStorage is unavailable.</li>
+          <li>Every converted item is created as a private draft. Publishing and sharing remain manual author decisions.</li>
+          <li>Start in <a href="./index.html">Classic Story Explorer</a> if you need to find public Classic items or assemble a batch.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="common-rules">
+        <h2 id="common-rules">Common conversion rules</h2>
+        <ul>
+          <li>The converter creates a draft item so authors can review and edit before publishing.</li>
+          <li>Converted item titles use a <code>(Converted)</code> prefix so they are easy to identify.</li>
+          <li>After the converted draft is published and shared, owners or administrators can open the Classic item in ArcGIS and use <strong>Select replacement</strong> to choose the new item.</li>
+          <li>Classic title, subtitle, owner/byline, text, links, images, maps, captions, and credits are preserved when the source exposes them in a usable form.</li>
+          <li>Classic HTML is cleaned and mapped to ArcGIS StoryMaps text blocks, buttons, image blocks, embeds, map blocks, sidecars, swipe blocks, tours, or Collection entries.</li>
+          <li>Referenced ArcGIS web maps are kept as ArcGIS item references when possible. Classic web maps used in Collection-style output are opened through a Map Viewer URL for now.</li>
+          <li>Images that live directly under the Classic source item's <code>/info/</code> or same-item <code>/resources/</code> URLs are copied into the converted item when possible, and converted item thumbnails are uploaded as image bytes.</li>
+          <li>Clearly broken non-ArcGIS external image URLs are replaced with a StoryMaps placeholder image and caption note. ArcGIS item resource URLs from other items are kept as URI references and are not browser-probed.</li>
+          <li>Unsupported Classic behavior is flattened into the closest editable StoryMaps structure instead of trying to recreate retired viewer behavior exactly.</li>
+          <li>Authors should review the draft for missing media, private dependencies, map extents, section order, styling differences, and any links that require cleanup.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="recipes">
+        <h2 id="recipes">Recipe anchors</h2>
+        <ul class="toc">
+          <li><a href="#map-tour">Classic Map Tour</a></li>
+          <li><a href="#shortlist">Classic Shortlist</a></li>
+          <li><a href="#swipe">Classic Swipe</a></li>
+          <li><a href="#map-series">Classic Map Series</a></li>
+          <li><a href="#map-journal">Classic Map Journal</a></li>
+          <li><a href="#cascade">Classic Cascade</a></li>
+          <li><a href="#known-limitations">Known limitations</a></li>
+        </ul>
+      </section>
+
+      <section id="map-tour" aria-labelledby="map-tour-title">
+        <h2 id="map-tour-title">Classic Map Tour</h2>
+        <div class="recipe-grid">
+          <div class="card"><span class="label">Target</span><span class="value">Story</span></div>
+          <div class="card"><span class="label">Primary recipe</span><span class="value">Guided map tour block</span></div>
+        </div>
+        <p>Tour points become places in a guided map tour. If the Classic configuration references a web map and source layer, the converter reads the layer features and preserves the configured order when possible.</p>
+        <ul>
+          <li><code>layout: integrated</code> maps to a map-focused guided tour.</li>
+          <li><code>layout: side-panel</code> maps to a media-focused guided tour.</li>
+          <li>Empty point titles or descriptions are kept empty so StoryMaps can hide optional UI.</li>
+        </ul>
+      </section>
+
+      <section id="shortlist" aria-labelledby="shortlist-title">
+        <h2 id="shortlist-title">Classic Shortlist</h2>
+        <div class="recipe-grid">
+          <div class="card"><span class="label">Target</span><span class="value">Story</span></div>
+          <div class="card"><span class="label">Primary recipe</span><span class="value">Data-driven Explorer grid</span></div>
+        </div>
+        <p>When your ArcGIS token can create items and publish hosted features, the converter creates a private hosted point layer and uses it in one Explorer grid tour. Multiple tabs become categories in a categorized grid.</p>
+        <ul>
+          <li>One non-empty category becomes a regular Explorer grid; two or more become one categorized Explorer grid.</li>
+          <li>Places are grouped by category when the source layer exposes that relationship, including copied CSV layers that store categories in fields such as <code>TAB_NAME</code>.</li>
+          <li>If hosted publishing is unavailable or fails, separate embedded Explorer grids preserve the categories without requiring a feature layer.</li>
+          <li>All populated categories and places stay together in the backing feature layer for the single categorized Explorer grid.</li>
+          <li>StoryMaps Builder supports eight visible categories. For a larger Shortlist, duplicate the tour and split the categories between two tours; the backing layer still contains all converted data.</li>
+          <li>The hosted layer and StoryMap draft start private. Review, publish, and share both items for the intended audience.</li>
+        </ul>
+      </section>
+
+      <section id="swipe" aria-labelledby="swipe-title">
+        <h2 id="swipe-title">Classic Swipe</h2>
+        <div class="recipe-grid">
+          <div class="card"><span class="label">Target</span><span class="value">Story</span></div>
+          <div class="card"><span class="label">Primary recipe</span><span class="value">Swipe block</span></div>
+        </div>
+        <p>Two-web-map Swipe apps become a StoryMaps swipe block with two web map panels. Single-web-map layer swipe apps can also be converted when the Classic configuration exposes the compared layer ids. The Classic spyglass layout does not have a direct StoryMaps equivalent, so it is converted to the standard swipe interaction.</p>
+        <ul>
+          <li>Best-supported source shape: Classic <code>dataModel:"TWO_WEBMAPS"</code>.</li>
+          <li>The first Classic web map is preserved as the left/before side, and the second Classic web map is preserved as the right/after side.</li>
+          <li>Layer swipe uses the same web map resource on both sides, with opposite <code>mapLayers</code> visibility overrides on each side.</li>
+        </ul>
+      </section>
+
+      <section id="map-series" aria-labelledby="map-series-title">
+        <h2 id="map-series-title">Classic Map Series</h2>
+        <div class="recipe-grid">
+          <div class="card"><span class="label">Target</span><span class="value">StoryMaps output</span></div>
+          <div class="card"><span class="label">Primary recipe</span><span class="value">Collection-style entries</span></div>
+        </div>
+        <p>Series entries are converted into ordered Collection items. Hidden Classic entries are preserved as hidden Collection items so authors can review or re-enable them later.</p>
+        <ul>
+          <li>Web pages and iframe sources become embed/link entries.</li>
+          <li>ArcGIS URLs are converted to ArcGIS item entries when a usable item id is present.</li>
+          <li>Web map entries currently use a Map Viewer URL so the map remains directly openable.</li>
+        </ul>
+      </section>
+
+      <section id="map-journal" aria-labelledby="map-journal-title">
+        <h2 id="map-journal-title">Classic Map Journal</h2>
+        <div class="recipe-grid">
+          <div class="card"><span class="label">Target</span><span class="value">Story</span></div>
+          <div class="card"><span class="label">Primary recipe</span><span class="value">Sidecar blocks</span></div>
+        </div>
+        <p>Journal sections become sidecar slides with fixed narrative panels. Panel HTML is parsed into supported StoryMaps text, list, image, button, embed, and link structures.</p>
+        <ul>
+          <li>Panel links and button-like links are preserved when possible.</li>
+          <li>Standalone media-action links become StoryMaps sidecar action buttons that replace the slide media panel when clicked.</li>
+          <li>Inline media-action links still become regular links to the target media. Web map links open Map Viewer with the Classic action extent when available.</li>
+          <li>Navigation actions are mapped to StoryMaps anchor links when the destination section can be identified.</li>
+          <li>Sidecar media can be web maps, images, embeds, web apps, or web pages.</li>
+        </ul>
+      </section>
+
+      <section id="cascade" aria-labelledby="cascade-title">
+        <h2 id="cascade-title">Classic Cascade</h2>
+        <div class="recipe-grid">
+          <div class="card"><span class="label">Target</span><span class="value">Story</span></div>
+          <div class="card"><span class="label">Primary recipe</span><span class="value">Immersive sidecars and narrative blocks</span></div>
+        </div>
+        <p>Cascade sections are converted into StoryMaps narrative blocks and immersive sidecars. Floating-panel sidecars are used for Cascade because they better match the original scrolling presentation style.</p>
+        <ul>
+          <li>Cover images, titles, subtitles, and byline are preserved when usable.</li>
+          <li>Large Classic text is mapped conservatively to readable StoryMaps text blocks.</li>
+          <li>Immersive web map views preserve Classic extents, layer visibility overrides, and pinned pop-up targets when those are stored in the Cascade view.</li>
+          <li>Inline images use supported StoryMaps media sizing, usually standard size for images embedded inside text flow.</li>
+          <li>Credits are converted into StoryMaps credits children with title, paragraph, and attribution rows when possible.</li>
+        </ul>
+      </section>
+
+      <section id="known-limitations" aria-labelledby="known-limitations-title">
+        <h2 id="known-limitations-title">Known limitations</h2>
+        <p>
+          The converter is intentionally transparent. These are areas we have tested or investigated where the current output may still need author cleanup.
+        </p>
+        <ul>
+          <li>
+            <strong>Inline text colors:</strong> Classic stories can include arbitrary colored spans. The converter maps supported Classic colors to StoryMaps Builder text color classes when possible. Some custom colors may still need author review.
+          </li>
+          <li>
+            <strong>Credit links:</strong> Credits support text and attribution rows. The converter emits Builder-style attribution links, but authors should still verify credit links after conversion because Builder may normalize unsupported markup.
+          </li>
+          <li>
+            <strong>Logos:</strong> Classic logo images, links, and alt text are preserved on the generated StoryMaps root node when the converter can identify the source logo fields.
+          </li>
+          <li>
+            <strong>Classic-only interactions:</strong> Retired behaviors such as Swipe spyglass, highly customized Cascade transitions, custom JavaScript actions, or template-specific navigation widgets are mapped to the closest editable StoryMaps block rather than recreated exactly.
+          </li>
+          <li>
+            <strong>Swipe layer mode:</strong> Classic Swipe could compare layers inside a single web map. The converter can map this to one StoryMaps swipe block when the source exposes usable layer ids, but authors should verify that each side shows the intended layer visibility.
+          </li>
+          <li>
+            <strong>Shortlist category tabs:</strong> With hosted publishing permission, all Classic tabs are preserved in one data-driven categorized Explorer grid. Otherwise the converter creates one embedded Explorer grid per category. Authors should review category labels, order, images, links, and sharing on the new hosted layer.
+          </li>
+          <li>
+            <strong>Private or broken dependencies:</strong> Web maps, images, videos, feature layers, and embeds must still be reachable by the author and intended audience. The converter can reference discovered dependencies, but it cannot repair private or missing source content.
+          </li>
+          <li>
+            <strong>Image resources:</strong> Images stored directly on the Classic source item are copied into the converted item when possible. Images that belong to other ArcGIS items are treated as separate dependencies; if those items are later deleted or restricted, authors may still need to replace the affected media.
+          </li>
+          <li>
+            <strong>HTML cleanup:</strong> Classic panel text may contain old inline styles, nested tables, unsupported classes, empty paragraphs, or embedded iframes. The converter cleans and preserves the useful parts, but authors should review spacing, link behavior, and media placement.
+          </li>
+          <li>
+            <strong>Map Series target shape:</strong> Map Series entries are mapped to a StoryMaps-compatible output using Collection-style entries and links. Web map entries currently use a Map Viewer URL because native web map Collection support is still being handled conservatively. Authors should verify that every converted Collection item opens correctly before publishing.
+          </li>
+          <li>
+            <strong>Theme matching:</strong> The converter chooses the closest built-in StoryMaps theme from Classic color signals. This is a best-effort match, not a pixel-perfect recreation of the Classic visual design.
+          </li>
+          <li>
+            <strong>Draft review is required:</strong> A converted draft should always be reviewed in ArcGIS StoryMaps Builder before publishing. The goal is to preserve structure and content well enough to accelerate author migration, not to guarantee a finished publication.
+          </li>
+          <li>
+            <strong>Set replacement after publishing:</strong> The converter does not change the Classic item. After reviewing, publishing, and sharing the converted item, open the Classic item details in ArcGIS, choose <strong>Select replacement</strong>, and select the converted item.
+          </li>
+          <li>
+            <strong>Existing replacements remain unchanged:</strong> The Explorer displays an existing replacement so authors can review it, but the converter never creates or replaces that relationship.
+          </li>
+        </ul>
+      </section>
+    </main>
+    <script src="./config.js?v=20260814-2"></script>
+  </body>
+</html>

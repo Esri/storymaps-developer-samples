@@ -9,6 +9,7 @@ This repository is intended for sharing a collection of developer-friendly pathw
 - **[Find related ArcGIS Online items script](/related-items/README.md)** features a Python tool to inventory and visualize the relationships between items in your organization and beyond.
 
 - **[Story helper notebooks](/notebooks/README.md)** can be run in the ArcGIS Notebooks environment to perform a number of utility functions related to story management, authoring, and more.
+- **[Classic Story Explorer & Converter](/classic-converter/)** packages the Classic converter app as a standalone static site for GitHub Pages hosting.
 
 ## Instructions
 

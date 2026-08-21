@@ -1,0 +1,244 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Image Block",
+  "description": "A block that renders images in the story",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "image"
+    },
+    "config": {
+      "title": "Config",
+      "description": "Config object for the Image block",
+      "type": "object",
+      "properties": {
+        "isHidden": {
+          "title": "Is Hidden",
+          "description": "If true the block will not be rendered",
+          "type": "boolean"
+        },
+        "size": {
+          "title": "Block Size",
+          "description": "Size of the block layout",
+          "type": "string",
+          "default": "standard",
+          "enum": ["standard", "wide", "full", "float"]
+        },
+        "floatAlignment": {
+          "title": "Float Alignment",
+          "description": "Alignment of the image when the block size is 'float'",
+          "default": "start",
+          "type": "string",
+          "enum": ["start", "end"]
+        },
+        "placeholder": {
+          "title": "Placeholder",
+          "description": "An alternative block to show on mobile devices",
+          "type": "object",
+          "properties": {
+            "resource": {
+              "title": "Resource ID",
+              "description": "Resource id for placeholder resource",
+              "type": "string"
+            },
+            "placement": {
+              "title": "Media Placement",
+              "description": "Placement of the image when the block is set to 'fillParent' state (e.g. fit vs fill)",
+              "type": "object",
+              "properties": {
+                "type": {
+                  "title": "Type",
+                  "description": "Type of placement",
+                  "type": "string",
+                  "enum": ["fit", "fill"]
+                },
+                "fill": {
+                  "title": "Fill",
+                  "description": "Fill properties for the image block",
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "title": "X Position",
+                      "description": "The horizontal focal point of the image the placement type is 'fill'",
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "y": {
+                      "title": "Y Position",
+                      "description": "The horizontal focal point of the image the placement type is 'fill'",
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["x", "y"],
+                  "additionalProperties": false
+                },
+                "fit": {
+                  "title": "Fit",
+                  "description": "Fit properties for the image block. NOTE: This property is required except on early versions of the image block in AGSM.",
+                  "type": "object",
+                  "properties": {
+                    "color": {
+                      "title": "Background Color",
+                      "description": "A hex value for the color, or a known theme color value (e.g. backgroundColor)",
+                      "type": "string"
+                    },
+                    "backgroundType": {
+                      "title": "Background Type",
+                      "description": "Type of background to display behind media",
+                      "type": "string",
+                      "enum": ["color", "blurredMedia"]
+                    }
+                  },
+                  "required": ["color"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["type", "fill"],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "required": ["resource", "placement"]
+        },
+        "placement": {
+          "title": "Media Placement",
+          "description": "Placement of the image when the block is set to 'fillParent' state (e.g. fit vs fill)",
+          "type": "object",
+          "properties": {
+            "type": {
+              "title": "Type",
+              "description": "Type of placement",
+              "type": "string",
+              "enum": ["fit", "fill"]
+            },
+            "fill": {
+              "title": "Fill",
+              "description": "Fill properties for the image block",
+              "type": "object",
+              "properties": {
+                "x": {
+                  "title": "X Position",
+                  "description": "The horizontal focal point of the image the placement type is 'fill'",
+                  "type": "number",
+                  "minimum": 0
+                },
+                "y": {
+                  "title": "Y Position",
+                  "description": "The horizontal focal point of the image the placement type is 'fill'",
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": ["x", "y"],
+              "additionalProperties": false
+            },
+            "fit": {
+              "title": "Fit",
+              "description": "Fit properties for the image block. NOTE: This property is required except on early versions of the image block in AGSM.",
+              "type": "object",
+              "properties": {
+                "color": {
+                  "title": "Background Color",
+                  "description": "A hex value for the color, or a known theme color value (e.g. backgroundColor)",
+                  "type": "string"
+                },
+                "backgroundType": {
+                  "title": "Background Type",
+                  "description": "Type of background to display behind media",
+                  "type": "string",
+                  "enum": ["color", "blurredMedia"]
+                }
+              },
+              "required": ["color"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["type", "fill"],
+          "additionalProperties": false
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Image block",
+      "type": "object",
+      "properties": {
+        "alt": {
+          "title": "Alt Text",
+          "description": "The alternative text for the image",
+          "type": "string"
+        },
+        "attribution": {
+          "title": "Attribution",
+          "description": "A place for authors to give credit to other creators where it is due",
+          "type": "string"
+        },
+        "caption": {
+          "title": "Caption Text",
+          "description": "The caption text for the image",
+          "type": "string"
+        },
+        "customCaptionColors": {
+          "title": "Custom Caption Colors",
+          "description": "DEPRECATED: This was only needed for Quill; it is no longer being used in Slate. An array of color strings",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isExpandable": {
+          "title": "Is Expandable",
+          "description": "Whether the image can be viewed in an expanded layout. NOTE: This property is only introduced as an override of states.isExpandable when a user toggles the checkbox in the `MediaPropertiesModal`. See README.",
+          "type": "boolean"
+        },
+        "image": {
+          "title": "Image Resource ID",
+          "description": "The resource ID for the image resource used by the image block.",
+          "type": "string"
+        },
+        "expressImage": {
+          "title": "Express Image Resource ID",
+          "description": "The resource ID for the express image (edited image) resource used by the image block.",
+          "type": "string"
+        },
+        "expressImageDataId": {
+          "title": "Express Image Data Resource ID",
+          "description": "The resource ID for the express image editor data resource used by the image block.",
+          "type": "string"
+        },
+        "isInFullView": {
+          "title": "Is In Full View",
+          "description": "Whether the image height is constrained to the screen size or not (inline images)",
+          "type": "boolean"
+        },
+        "linkLabel": {
+          "title": "Link Label",
+          "description": "The text used for the link to the image when used within a floating UI such as a Frame",
+          "type": "string"
+        },
+        "link": {
+          "title": "Link",
+          "description": "The URL to link to when the image is clicked",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title (Collection Item)",
+          "description": "The title of image when used in a collection",
+          "type": "string"
+        },
+        "url": {
+          "title": "Image URL",
+          "description": "The URL of the image, added for images when the image originated from an embed insertion",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": false
+}

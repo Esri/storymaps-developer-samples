@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Button Block",
+  "description": "A block that renders a button",
+  "type": "object",
+  "properties": {
+    "type": {
+      "enum": ["button"]
+    },
+    "config": {},
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Button block",
+      "type": "object",
+      "properties": {
+        "text": {
+          "title": "Button Text",
+          "description": "The text displayed on the button",
+          "type": "string"
+        },
+        "link": {
+          "title": "Button Link",
+          "description": "The URL the button links to",
+          "type": "string"
+        },
+        "alignment": {
+          "title": "Button Alignment",
+          "description": "The alignment of the button",
+          "type": "string",
+          "enum": ["start", "center", "end"]
+        }
+      },
+      "required": ["text", "link"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": false
+}

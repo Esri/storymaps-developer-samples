@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classic Story Converter Worker</title>
+  </head>
+  <body>
+    <textarea id="tokenInput" hidden></textarea>
+    <button id="validateTokenButton" type="button" hidden></button>
+    <button id="clearTokenButton" type="button" hidden></button>
+    <div id="tokenStatus" hidden></div>
+
+    <input id="sourceInput" type="text" hidden />
+    <button id="clearSourceButton" type="button" hidden></button>
+    <button id="analyzeButton" type="button" hidden></button>
+    <div id="sourceStatus" hidden></div>
+
+    <div id="recipeSummary" hidden></div>
+    <div id="converterSupport" hidden></div>
+    <button id="createButton" type="button" hidden></button>
+    <div id="createStatus" hidden></div>
+    <div id="createdItemLink" hidden></div>
+    <pre id="jsonPreview" hidden>{}</pre>
+
+    <script src="./app.js?v=20260807-3" type="module"></script>
+  </body>
+</html>

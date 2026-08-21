@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Audio Block",
+  "description": "A block that renders an audio player",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "audio"
+    },
+    "config": {
+      "title": "Config",
+      "description": "Config object for the Audio block",
+      "type": "object",
+      "properties": {
+        "size": {
+          "title": "Block Size",
+          "description": "Size of the block layout",
+          "type": "string",
+          "default": "standard",
+          "enum": ["standard", "wide", "full", "float"]
+        },
+        "floatAlignment": {
+          "title": "Float Alignment",
+          "description": "Alignment of the audio block when the block size is 'float'",
+          "default": "start",
+          "type": "string",
+          "enum": ["start", "end"]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Audio block",
+      "type": "object",
+      "properties": {
+        "alt": {
+          "title": "Alt Text",
+          "description": "The alternative text for the audio",
+          "type": "string"
+        },
+        "transcript": {
+          "title": "Transcript",
+          "description": "The resource ID of the JSON that holds the user-written transcript text",
+          "type": "string"
+        },
+        "audio": {
+          "title": "Audio Resource ID",
+          "description": "The ID of the audio resource",
+          "type": "string"
+        },
+        "customCaptionColors": {
+          "title": "Custom Caption Colors",
+          "description": "DEPRECATED: This was only needed for Quill; it is no longer being used in Slate. An array of color strings",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "caption": {
+          "title": "Caption",
+          "description": "The caption for the audio block",
+          "type": "string"
+        },
+        "loop": {
+          "title": "Loop",
+          "description": "Audio settings: whether the audio should loop or not",
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": false
+}

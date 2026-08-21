@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Large Number Block",
+  "description": "A big-number infographic block",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "large-number"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "alignment": {
+          "type": "string"
+        },
+        "descriptionPosition": {
+          "type": "string"
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "config": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": true
+}

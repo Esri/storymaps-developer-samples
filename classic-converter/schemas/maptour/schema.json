@@ -1,0 +1,364 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tour Block",
+  "description": "A block that renders the tour",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "tour"
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Tour block",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "Tour Type",
+          "description": "The type of tour",
+          "type": "string",
+          "enum": ["guided-tour", "explorer"]
+        },
+        "subtype": {
+          "title": "Tour Subtype",
+          "description": "The subtype of tour",
+          "type": "string",
+          "enum": [
+            "map-focused",
+            "media-focused",
+            "grid",
+            "list",
+            "categorized",
+            "categorized-grid"
+          ]
+        },
+        "accentColor": {
+          "title": "Accent Color",
+          "description": "The accent color for the tour points",
+          "type": "string"
+        },
+        "narrativePanelPosition": {
+          "title": "Narrative Panel Position",
+          "description": "The position of the narrative panel",
+          "type": "string",
+          "enum": ["end", "start"]
+        },
+        "narrativePanelSize": {
+          "title": "Narrative Panel Size",
+          "description": "The size of the narrative panel",
+          "type": "string",
+          "enum": ["small", "medium", "large"]
+        },
+        "map": {
+          "title": "Map id",
+          "description": "The id of the map associated with the tour",
+          "type": "string"
+        },
+        "places": {
+          "title": "Places data",
+          "description": "An array of places in the tour",
+          "type": "array",
+          "items": { "$ref": "#/definitions/PlaceData" }
+        },
+        "isNumberDescending": {
+          "title": "Is Number Descending",
+          "description": "Whether the numbering of tour points is descending",
+          "type": "boolean"
+        },
+        "startingNumber": {
+          "title": "Starting Number",
+          "description": "The starting number for the tour points",
+          "type": "number"
+        },
+        "categories": {
+          "title": "Categories data",
+          "description": "An array of categories in the tour",
+          "type": "array",
+          "items": { "$ref": "#/definitions/TourCategory" }
+        },
+        "title": {
+          "title": "Block Title",
+          "description": "The display title for the tour",
+          "type": "string"
+        },
+        "hideThumbnail": {
+          "title": "Hide Thumbnail",
+          "description": "Whether to hide the thumbnail images for tour places",
+          "type": "boolean"
+        },
+        "description": {
+          "title": "Block Description",
+          "description": "The display description for the tour",
+          "type": "string"
+        },
+        "dataDriven": {
+          "title": "Data Driven",
+          "description": "Properties for data driven tours",
+          "type": "object",
+          "properties": {
+            "dataSource": {
+              "title": "Data Source ID",
+              "description": "The resource ID for a data source (currently only feature-service-backed ArcGIS Feature Layer/Feature View item)",
+              "type": "string"
+            },
+            "placesLayerIdentifiers": {
+              "title": "Places Layer Identifiers",
+              "description": "Id of the place data resides in the layer (data-driven only, for layers with sublayers)",
+              "type": "object",
+              "properties": {
+                "sublayerId": {
+                  "type": "number",
+                  "description": "sublayer Id (data-driven only)"
+                }
+              }
+            },
+            "titleFieldName": {
+              "title": "Title Field Name",
+              "description": "The field name to use for the title (data-driven only)",
+              "type": "string"
+            },
+            "descriptionFieldName": {
+              "title": "Description Field Name",
+              "description": "The field name to use for the description (data-driven only)",
+              "type": "string"
+            },
+            "attributionFieldName": {
+              "title": "Attribution Field Name",
+              "description": "The field name to use for the attribution of an image (data-driven only)",
+              "type": "string"
+            },
+            "altTextFieldName": {
+              "title": "Alt Text Field Name",
+              "description": "The field name to use for the alt text of an image (data-driven only)",
+              "type": "string"
+            },
+            "imgUrlFieldName": {
+              "title": "Image URL Field Name",
+              "description": "The field name to use for image urls (data-driven only). If undefined, default is to use feature attachments",
+              "type": "string"
+            },
+            "thumbnailUrlFieldName": {
+              "title": "Thumbnail URL Field Name",
+              "description": "The field name to use for a thumbnail image url. In the UI, the thumbnail image will be generated from the imgUrlFieldname if there is one. If both properties are undefined, default is to use a feature attachment.",
+              "type": "string"
+            },
+            "categoryFieldName": {
+              "title": "Category Field Name",
+              "description": "The field name to use for categories (data-driven only, categorized only)",
+              "type": "string"
+            },
+            "sortFieldName": {
+              "title": "Sort Field Name",
+              "description": "The field name used for sorting the places (data-driven only)",
+              "type": "string"
+            },
+            "sortDirection": {
+              "title": "Sort Direction",
+              "description": "The direction for sorting the places (data-driven only)",
+              "type": "string",
+              "enum": ["ascending", "descending"]
+            },
+            "maximumPlaceCount": {
+              "title": "Maximum Place Count",
+              "description": "The maximum number of places to include in the tour (data-driven only)",
+              "type": "number"
+            },
+            "maximumMediaPerPlace": {
+              "title": "Maximum Media Per Place",
+              "description": "The maximum number of media items to include per place (data-driven only)",
+              "type": "number"
+            },
+            "mediaPlacement": {
+              "title": "Media Placement",
+              "description": "Placement of the media within the tour place",
+              "type": "object",
+              "properties": {
+                "type": {
+                  "title": "Type",
+                  "description": "Type of placement",
+                  "type": "string",
+                  "enum": ["fit", "fill"]
+                },
+                "fill": {
+                  "title": "Fill",
+                  "description": "Fill properties for the image block",
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "title": "X Position",
+                      "description": "The horizontal focal point of the image when the placement type is 'fill'",
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "y": {
+                      "title": "Y Position",
+                      "description": "The vertical focal point of the image when the placement type is 'fill'",
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["x", "y"],
+                  "additionalProperties": false
+                },
+                "fit": {
+                  "title": "Fit",
+                  "description": "Fit properties for the image block",
+                  "type": "object",
+                  "properties": {
+                    "color": {
+                      "title": "Background Color",
+                      "description": "A hex value for the color, or a known theme color value (e.g. backgroundColor)",
+                      "type": "string"
+                    },
+                    "backgroundType": {
+                      "title": "Background Type",
+                      "description": "Type of background to display behind media",
+                      "type": "string",
+                      "enum": ["color", "blurredMedia"]
+                    }
+                  },
+                  "required": ["color"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["type", "fill"],
+              "additionalProperties": false
+            },
+            "showPlacesWithoutMedia": {
+              "title": "Show Places Without Media",
+              "description": "Whether to show places that do not have media (data-driven only)",
+              "type": "boolean"
+            },
+            "supportedMediaTypes": {
+              "title": "Supported Media Types",
+              "description": "The media types that are supported (data-driven only)",
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": ["image"]
+            },
+            "buttons": {
+              "type": "array",
+              "title": "Configurable Buttons",
+              "description": "A configurable button associated with each place. Only up to 2 buttons are allowed.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "buttonText": {
+                    "title": "Button Text",
+                    "description": "The text to display within the Button block",
+                    "type": "string"
+                  },
+                  "buttonLinkFieldName": {
+                    "title": "Button Link Field Name",
+                    "description": "The field name of the Button block link",
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "maxItems": 2
+            },
+            "showLeastRecentAttachmentFirst": {
+              "title": "Show Least Recent Attachment First",
+              "description": "Whether to show the least recent attachment first (data-driven only)",
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "isOriginalCategorizedSortOrder": {
+          "title": "Is Original Categorized Sort Order",
+          "description": "Whether to use the original sort order for categorized tours",
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "type": { "const": "guided-tour" },
+                "subtype": { "enum": ["map-focused", "media-focused"] }
+              },
+              "required": ["type", "subtype"]
+            },
+            {
+              "properties": {
+                "type": { "const": "explorer" },
+                "subtype": { "enum": ["grid", "list", "categorized", "categorized-grid"] }
+              },
+              "required": ["type", "subtype"]
+            }
+          ]
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "PlaceData": {
+      "title": "PlaceData",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The ID of the place"
+        },
+        "featureId": {
+          "type": "string",
+          "description": "The ID of the corresponding feature, if exists"
+        },
+        "media": {
+          "type": "string",
+          "description": "The blockID of the place media"
+        },
+        "title": {
+          "type": "string",
+          "description": "The blockID of the place title"
+        },
+        "contents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "The block IDs of additional content"
+        },
+        "config": {
+          "type": "object",
+          "description": "Any configuration for the place",
+          "properties": {
+            "isHidden": {
+              "title": "Is Hidden",
+              "description": "Whether the place block is hidden",
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "required": ["contents"]
+    },
+    "TourCategory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name for category of features"
+        },
+        "alias": {
+          "type": "string",
+          "description": "Data driven only, for over-riding category name from feature service"
+        },
+        "color": {
+          "type": "string",
+          "description": "Color of category icon; used for map pins of category features, as well in list of categories on categorized tour overview"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon for category; used for map pins of category features, as well in list of categories on categorized tour overview"
+        }
+      },
+      "required": ["name", "color"]
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": false
+}

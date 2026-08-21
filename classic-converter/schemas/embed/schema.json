@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Embed Block",
+  "description": "A block that renders an Embed",
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "embed"
+    },
+    "config": {
+      "title": "Config",
+      "description": "Config object for the Embed block",
+      "type": "object",
+      "properties": {
+        "size": {
+          "title": "Block Size",
+          "description": "Size of the Embed block layout",
+          "type": "string",
+          "default": "standard",
+          "enum": ["standard", "wide", "full", "float"]
+        },
+        "floatAlignment": {
+          "title": "Float Alignment",
+          "description": "Float alignment of the Embed block",
+          "type": "string",
+          "enum": ["left", "right"]
+        },
+        "placeholder": {
+          "title": "Placeholder",
+          "description": "An alternative block to show on mobile devices",
+          "type": "object",
+          "properties": {
+            "resource": {
+              "title": "Resource ID",
+              "description": "Resource id for placeholder resource",
+              "type": "string"
+            },
+            "placement": {
+              "title": "Media Placement",
+              "description": "Placement of the image when the block is set to 'fillParent' state (e.g. fit vs fill)",
+              "type": "object",
+              "properties": {
+                "type": {
+                  "title": "Type",
+                  "description": "Type of placement",
+                  "type": "string",
+                  "enum": ["fill"]
+                },
+                "fill": {
+                  "title": "Fill",
+                  "description": "Fill properties for the image block",
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "title": "X Position",
+                      "description": "The horizontal focal point of the image the placement type is 'fill'",
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "y": {
+                      "title": "Y Position",
+                      "description": "The horizontal focal point of the image the placement type is 'fill'",
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["x", "y"],
+                  "additionalProperties": false
+                },
+                "fit": {
+                  "title": "Fit",
+                  "description": "Fit properties for the image block",
+                  "type": "object",
+                  "properties": {
+                    "color": {
+                      "title": "Color",
+                      "description": "Background color for fit placement",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["type", "fill", "fit"],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "required": ["resource", "placement"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data object for the Embed block",
+      "type": "object",
+      "properties": {
+        "url": {
+          "title": "Url",
+          "description": "The original URL to the web content",
+          "type": "string"
+        },
+        "embedSrc": {
+          "title": "Embed Source",
+          "description": "The iframe or image src",
+          "type": "string"
+        },
+        "display": {
+          "title": "Display",
+          "description": "How the web content should be displayed in the story",
+          "type": "string",
+          "enum": ["inline", "card"]
+        },
+        "embedType": {
+          "title": "Embed Type",
+          "description": "The type of web content (extracted by embedly), or pdf",
+          "type": "string",
+          "enum": ["link", "photo", "video", "rich", "pdf"]
+        },
+        "title": {
+          "title": "Card Title",
+          "description": "The title of the web content to display on the card",
+          "type": "string"
+        },
+        "description": {
+          "title": "Card Description",
+          "description": "The description of the web content to display on the card",
+          "type": "string"
+        },
+        "thumbnailUrl": {
+          "title": "Card Thumbnail Url",
+          "description": "The thumbnail url of the web content to display on the card",
+          "type": "string"
+        },
+        "thumbnailResourceId": {
+          "title": "Card Thumbnail Resource Id",
+          "description": "The thumbnail resource id for custom uploaded thumbnails to display on the card",
+          "type": "string"
+        },
+        "providerUrl": {
+          "title": "Card Provider Url",
+          "description": "The provider url of the web content to display on the card",
+          "type": "string"
+        },
+        "caption": {
+          "title": "Inline Embed Caption",
+          "description": "A caption to show with an inline embed",
+          "type": "string"
+        },
+        "alt": {
+          "title": "Inline Embed Alt Text",
+          "description": "Alt text to display with an inline embed",
+          "type": "string"
+        },
+        "aspectRatio": {
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the web content, if available",
+          "type": "number"
+        },
+        "width": {
+          "title": "Width",
+          "description": "The width of the media provided",
+          "type": "number"
+        },
+        "height": {
+          "title": "Height",
+          "description": "The height of the media provided",
+          "type": "number"
+        },
+        "useSmartEmbed": {
+          "title": "Use Smart Embed",
+          "description": "When enabled, the app will use Embedly and other smart content detection to enhance the iframe. Disable to force the author's URL to be used as-is.",
+          "type": "boolean"
+        },
+        "addedAsEmbedCode": {
+          "title": "Added As Embed Code",
+          "description": "If the iframe was initially added as an iframe embed code instead of a url",
+          "type": "boolean"
+        },
+        "hasPlaceholderOpenButton": {
+          "title": "Has Placeholder Open Button",
+          "description": "Whether placeholder image has button that opens original embed",
+          "type": "boolean"
+        },
+        "hasEmbedOpenButton": {
+          "title": "Has Embed Open Button",
+          "description": "Whether has button on embed that opens embed in another tab",
+          "type": "boolean"
+        },
+        "isInteractiveByDefault": {
+          "title": "Is Interactive By Default",
+          "description": "Allow readers to interact with iframes without clicking first",
+          "type": "boolean"
+        },
+        "isInteractiveOnMobile": {
+          "title": "Is Interactive On Mobile",
+          "description": "Display embed with interaction on in mobile",
+          "type": "boolean"
+        },
+        "heightConstrained": {
+          "title": "Height Constrained",
+          "description": "If false, it will allow the iframe to use the full height or aspect ratio provided instead of constraining to the screen height",
+          "type": "boolean"
+        },
+        "embedResourceId": {
+          "title": "Embed Resource Id",
+          "description": "If this embed is a portal item resource like an agol-hosted pdf (/data), or an ITEM resource like a pdf uploaded to this story as a resource (/resources/[filename]), this block will have an associated embedResourceId. The resource manages token adding and the ability to live-embed",
+          "type": "string"
+        },
+        "isEmbedSupported": {
+          "title": "Is Embed Supported",
+          "description": "store whether or not this url can be embedded inline so we don't have to query this every time builder opens",
+          "type": "boolean"
+        },
+        "isLiveOnMobile": {
+          "title": "Is Live On Mobile",
+          "description": "Chosen by user in the EmbedPropertiesModal. If true embeds will be 'live' on mobile - meaning the embed will show on mobile instead of a card or placeholder image",
+          "type": "boolean"
+        },
+        "allowSmallEmbeds": {
+          "title": "Allow Small Embeds",
+          "description": "If true, the embed will have the interactive embed option in the small block sizes (e.g. sidecar narrative panel) instead of only having the card option",
+          "type": "boolean"
+        },
+        "fillParent": {
+          "title": "If the block should fill its parent's space",
+          "description": "If true, the embed will fill its parent container",
+          "type": "boolean"
+        },
+        "shouldRenderWithEmbedSrc": {
+          "title": "Render with embedSrc",
+          "description": "Render the embed block with the embedSrc provided if `true`. Otherwise, the block's URL will be generated based on the block's resource data.",
+          "type": "boolean"
+        }
+      },
+      "required": ["url"],
+      "additionalProperties": false
+    },
+    "dependents": {
+      "type": "object",
+      "properties": {
+        "offline": { "type": "string" }
+      }
+    }
+  },
+  "required": ["type", "data"],
+  "additionalProperties": false
+}
