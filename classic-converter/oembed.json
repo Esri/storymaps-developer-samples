@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "type": "link",
+  "provider_name": "Story Toolkit",
+  "provider_url": "https://esri.github.io/storymaps-developer-samples/classic-converter/share.html",
+  "title": "Classic Story Explorer & Converter",
+  "author_name": "Esri StoryMaps",
+  "thumbnail_url": "https://esri.github.io/storymaps-developer-samples/classic-converter/icon.png",
+  "thumbnail_width": 536,
+  "thumbnail_height": 486
+}

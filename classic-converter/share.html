@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Classic Story Explorer &amp; Converter | Story Toolkit</title>
+    <meta name="description" content="Share the Classic Story Explorer &amp; Converter page with a richer card preview for Microsoft Teams, chat apps, and social links." />
+    <meta property="og:title" content="Classic Story Explorer &amp; Converter | Story Toolkit" />
+    <meta property="og:description" content="Find public Classic Story Maps, review migration signals, and send supported items to the Classic Story Converter." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://esri.github.io/storymaps-developer-samples/classic-converter/share.html" />
+    <meta property="og:site_name" content="Story Toolkit" />
+    <meta property="og:image" content="https://esri.github.io/storymaps-developer-samples/classic-converter/icon.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="536" />
+    <meta property="og:image:height" content="486" />
+    <meta property="og:image:alt" content="Classic Story Explorer &amp; Converter icon" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Classic Story Explorer &amp; Converter | Story Toolkit" />
+    <meta name="twitter:description" content="Find public Classic Story Maps and prepare supported items for conversion." />
+    <meta name="twitter:image" content="https://esri.github.io/storymaps-developer-samples/classic-converter/icon.png" />
+    <meta name="twitter:image:alt" content="Classic Story Explorer &amp; Converter icon" />
+    <link rel="canonical" href="https://esri.github.io/storymaps-developer-samples/classic-converter/share.html" />
+    <link rel="alternate" type="application/json+oembed" href="./oembed.json" title="Classic Story Explorer &amp; Converter oEmbed" />
+    <link rel="icon" href="./icon.png" type="image/png" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f7f9;
+        --panel: #ffffff;
+        --panel-alt: #edf5fb;
+        --text: #1f2328;
+        --muted: #55606d;
+        --accent: #0079c1;
+        --border: #d6dce3;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #15181b;
+          --panel: #20252a;
+          --panel-alt: #18212a;
+          --text: #f1f4f7;
+          --muted: #a8b2bc;
+          --accent: #4db8ff;
+          --border: #3a424b;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, var(--panel-alt), var(--bg));
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.5;
+      }
+      .page {
+        width: min(960px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 40px 0 56px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
+      }
+      .hero {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: minmax(120px, 180px) 1fr;
+        align-items: center;
+      }
+      .hero img {
+        width: 100%;
+        max-width: 180px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+      h1, h2, p { margin: 0; }
+      h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; }
+      .lede { margin-top: 12px; color: var(--muted); font-size: 1.05rem; max-width: 66ch; }
+      .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+      a.button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 700;
+        border: 1px solid transparent;
+      }
+      a.primary { background: var(--accent); color: #fff; }
+      a.secondary { border-color: var(--border); color: var(--text); background: transparent; }
+      .notes {
+        margin-top: 24px;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .note {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        background: rgba(127, 174, 204, 0.08);
+      }
+      .note strong { display: block; margin-bottom: 4px; }
+      .small { font-size: 0.95rem; color: var(--muted); }
+      .footer { margin-top: 18px; color: var(--muted); font-size: 0.92rem; }
+      @media (max-width: 640px) {
+        .hero { grid-template-columns: 1fr; }
+        .hero img { max-width: 140px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card hero" aria-labelledby="share-title">
+        <img src="./icon.png" alt="Classic Story Explorer &amp; Converter icon" />
+        <div>
+          <p class="small">Story Toolkit share page</p>
+          <h1 id="share-title">Classic Story Explorer &amp; Converter</h1>
+          <p class="lede">Use this page when you want Microsoft Teams and other chat tools to show a richer preview card. It points people to the public Classic Story Explorer while keeping the share metadata static and easy to scrape.</p>
+          <div class="actions">
+            <a class="button primary" href="./">Open Explorer</a>
+            <a class="button secondary" href="./conversion-guide.html">Read the guide</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="notes" aria-label="Share tips">
+        <div class="note">
+          <strong>Best for Teams</strong>
+          <span>Share this page or the direct Explorer URL after the page has rebuilt so the preview can use the image and metadata.</span>
+        </div>
+        <div class="note">
+          <strong>Fallback route</strong>
+          <span>If the card still looks plain, share the direct Explorer URL and then paste the page link again after a hard refresh.</span>
+        </div>
+        <div class="note">
+          <strong>Preview image</strong>
+          <span>The card uses the toolkit icon as a stable thumbnail so the preview can load even when the app shell redirects.</span>
+        </div>
+      </section>
+
+      <p class="footer">This page is static so link unfurlers can read it without depending on JavaScript redirect handling.</p>
+    </main>
+  </body>
+</html>
