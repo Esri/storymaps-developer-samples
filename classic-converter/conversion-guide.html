@@ -163,7 +163,7 @@
         margin-top: 4px;
       }
     </style>
-    <link rel="stylesheet" href="./styles.css?v=20260807-18" />
+    <link rel="stylesheet" href="./styles.css?v=20260828-1" />
   </head>
   <body class="guide-page">
     <a class="skip-link" href="#guide-content">Skip to guide</a>
@@ -185,6 +185,7 @@
             <a href="./index.html">Explorer</a>
             <a href="./converter.html?manual=1">Converter</a>
             <a href="./conversion-guide.html" aria-current="page">Guide</a>
+            <a href="./changelog.html">Changelog</a>
             <a href="https://survey123.arcgis.com/share/bbd8cab7cff94e0780126a273ea22732?field:app_title=Classic%20Story%20Explorer%20%26%20Converter" target="_blank" rel="noopener noreferrer">Feedback</a>
           </nav>
         </div>
@@ -202,7 +203,7 @@
         <h2 id="before-you-start-title">Before you start</h2>
         <ul>
           <li>Sign in from Classic Story Explorer to search public and private scopes. The resulting short-lived token needs permission to create items.</li>
-          <li>The token stays in browser localStorage and is sent only to ArcGIS REST endpoints. It can be reused in another tab until it expires or you sign out; sessionStorage is only a fallback when localStorage is unavailable.</li>
+          <li>ArcGIS auth stays in browser localStorage so a valid sign-in can be reused across tabs and is sent only to ArcGIS REST endpoints. If localStorage is unavailable, the app falls back to sessionStorage for the current browser session.</li>
           <li>Every converted item is created as a private draft. Publishing and sharing remain manual author decisions.</li>
           <li>Start in <a href="./index.html">Classic Story Explorer</a> if you need to find public Classic items or assemble a batch.</li>
         </ul>
@@ -216,7 +217,7 @@
           <li>After the converted draft is published and shared, owners or administrators can open the Classic item in ArcGIS and use <strong>Select replacement</strong> to choose the new item.</li>
           <li>Classic title, subtitle, owner/byline, text, links, images, maps, captions, and credits are preserved when the source exposes them in a usable form.</li>
           <li>Classic HTML is cleaned and mapped to ArcGIS StoryMaps text blocks, buttons, image blocks, embeds, map blocks, sidecars, swipe blocks, tours, or Collection entries.</li>
-          <li>Referenced ArcGIS web maps are kept as ArcGIS item references when possible. Classic web maps used in Collection-style output are opened through a Map Viewer URL for now.</li>
+          <li>Referenced ArcGIS web maps are kept as native map blocks when possible, including in Collections. Source web maps are referenced, not copied or modified.</li>
           <li>Images that live directly under the Classic source item's <code>/info/</code> or same-item <code>/resources/</code> URLs are copied into the converted item when possible, and converted item thumbnails are uploaded as image bytes.</li>
           <li>Clearly broken non-ArcGIS external image URLs are replaced with a StoryMaps placeholder image and caption note. ArcGIS item resource URLs from other items are kept as URI references and are not browser-probed.</li>
           <li>Unsupported Classic behavior is flattened into the closest editable StoryMaps structure instead of trying to recreate retired viewer behavior exactly.</li>
@@ -285,14 +286,16 @@
       <section id="map-series" aria-labelledby="map-series-title">
         <h2 id="map-series-title">Classic Map Series</h2>
         <div class="recipe-grid">
-          <div class="card"><span class="label">Target</span><span class="value">StoryMaps output</span></div>
-          <div class="card"><span class="label">Primary recipe</span><span class="value">Collection-style entries</span></div>
+          <div class="card"><span class="label">Target</span><span class="value">Collection or Story</span></div>
+          <div class="card"><span class="label">Choose before converting</span><span class="value">Native Collection maps or one sidecar with navigation</span></div>
         </div>
-        <p>Series entries are converted into ordered Collection items. Hidden Classic entries are preserved as hidden Collection items so authors can review or re-enable them later.</p>
+        <p>Choose an output in Step 2 or in the main app’s item panel. Collection is the default: entries remain ordered, hidden entries remain hidden, and web maps become native map blocks. Plain-text summaries are retained, but Collections do not provide the Classic information panel.</p>
+        <p>Choose <strong>Story with sidecar</strong> to create one sidecar with a slide for every visible entry and navigation links to its headings. Supported rich information-panel content is preserved beside each map or media panel. Hidden entries are omitted from this output.</p>
         <ul>
           <li>Web pages and iframe sources become embed/link entries.</li>
           <li>ArcGIS URLs are converted to ArcGIS item entries when a usable item id is present.</li>
-          <li>Web map entries currently use a Map Viewer URL so the map remains directly openable.</li>
+          <li>Both paths retain available map extent, center/scale, layer visibility and supported pinned popup settings. The original web map is not modified.</li>
+          <li>Review map layers, media, navigation and narrative formatting before publishing. Some Classic interactions still require manual adjustment.</li>
         </ul>
       </section>
 
@@ -362,7 +365,7 @@
             <strong>HTML cleanup:</strong> Classic panel text may contain old inline styles, nested tables, unsupported classes, empty paragraphs, or embedded iframes. The converter cleans and preserves the useful parts, but authors should review spacing, link behavior, and media placement.
           </li>
           <li>
-            <strong>Map Series target shape:</strong> Map Series entries are mapped to a StoryMaps-compatible output using Collection-style entries and links. Web map entries currently use a Map Viewer URL because native web map Collection support is still being handled conservatively. Authors should verify that every converted Collection item opens correctly before publishing.
+            <strong>Map Series target shape:</strong> Choose native Collection maps or a Story with one sidecar and navigation. Collection summaries do not replace the full information panel; choose Sidecar when that content should remain beside the map. Verify map state and all narrative content before publishing.
           </li>
           <li>
             <strong>Theme matching:</strong> The converter chooses the closest built-in StoryMaps theme from Classic color signals. This is a best-effort match, not a pixel-perfect recreation of the Classic visual design.
@@ -379,6 +382,6 @@
         </ul>
       </section>
     </main>
-    <script src="./config.js?v=20260814-2"></script>
+    <script src="./config.js?v=20260828-1"></script>
   </body>
 </html>

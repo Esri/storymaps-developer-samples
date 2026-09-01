@@ -2,9 +2,9 @@
 // oauthRedirectUri may be relative to the current page, root-relative, or a
 // full same-origin HTTPS URL. Register the resolved URL in the ArcGIS OAuth app.
 window.CLASSIC_TOOLKIT_CONFIG = Object.freeze({
-  appVersion: "1.0.1",
-  lastUpdatedDate: "2026-08-14",
-  lastUpdatedLabel: "August 14, 2026",
+  appVersion: "1.1.0",
+  lastUpdatedDate: "2026-08-28",
+  lastUpdatedLabel: "August 28, 2026",
   arcgisPortalUrl: "https://story.maps.arcgis.com",
   oauthClientId: "nTrvyGsyggcVkfXi",
   oauthRedirectUri: "./arcgis-oauth-callback.html",
@@ -22,6 +22,12 @@ document.querySelectorAll("[data-story-toolkit-back]").forEach(link => {
 });
 
 document.querySelectorAll("[data-classic-app-meta]").forEach(element => {
+  if (!window.location.pathname.endsWith("/changelog.html")) {
+    const changelogLink = document.createElement("a");
+    changelogLink.href = "./changelog.html";
+    changelogLink.textContent = "Changelog";
+    element.insertAdjacentElement("afterend", changelogLink);
+  }
   const time = document.createElement("time");
   time.dateTime = window.CLASSIC_TOOLKIT_CONFIG.lastUpdatedDate;
   time.textContent = window.CLASSIC_TOOLKIT_CONFIG.lastUpdatedLabel;
