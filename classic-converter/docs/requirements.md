@@ -16,9 +16,8 @@ The converter must be maintained separately from Story Toolkit. It lives in its 
 ## Authentication
 
 - The user pastes an ArcGIS token.
-- The token is stored in browser localStorage for now so the signed-in session can be reused across tabs.
-- If localStorage is unavailable, the app may fall back to sessionStorage for the current tab only.
-- The app must not persist the token in cookies or files.
+- ArcGIS auth is stored in browser localStorage so a valid sign-in can be reused across tabs.
+- If localStorage is unavailable, the app may fall back to sessionStorage for the current browser session.
 - The app validates the token with ArcGIS `/community/self`.
 - The app reads the signed-in user's privileges from ArcGIS `/portals/self` using the active token. Hosted Shortlist publishing is allowed only when both `portal:user:createItem` and `portal:publisher:publishFeatures` are present; account type or role labels must not be used as a proxy.
 - The validation result should show username, organization id when available, and token time remaining when ArcGIS returns expiration metadata.
@@ -28,8 +27,8 @@ The converter must be maintained separately from Story Toolkit. It lives in its 
 - The user can paste a Classic Story Map item id or URL.
 - The app extracts the item id from common ArcGIS URL forms, including `appid=` and `id=`.
 - The worker page supports `?item=<item id or URL>` for preloading and `?token=<token>` for external integrations. When `token` is present, the app should read it, validate it, and remove it from the address bar with `history.replaceState`.
-- For prototyping, public Classic items can be analyzed and converted even when the token user is not the owner.
-- A future production workflow should require ownership or explicit copy permission before conversion.
+- Public Classic items can be viewed, but conversion requires sign-in and is limited to items owned by the signed-in user or readable items belonging to the same ArcGIS organization.
+- Missing or unverifiable ownership and organization metadata must block conversion.
 
 ## Source Workflow
 

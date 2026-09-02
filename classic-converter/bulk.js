@@ -1,3 +1,5 @@
+import { checkClassicConversionAccess, CLASSIC_CONVERSION_RESTRICTION } from "./toolkit-conversion-access.js";
+
 const ARCGIS_ROOT = "https://www.arcgis.com/sharing/rest";
 const CONVERTER_HANDOFF_KEY = "classic-storymaps:converter-handoff";
 const CONCURRENCY = 2;
@@ -10,7 +12,7 @@ const CLASSIC_TEMPLATES = [
   { key: "maptour", label: "Classic Map Tour", recipe: "Guided map tour block", target: "Story", preserves: "Tour stops, coordinates, titles, descriptions, images, and the source web map when available.", review: "Check the guided-tour layout, media framing, map extent, and any places with missing media.", keywords: ["maptour"], supported: true },
   { key: "shortlist", label: "Classic Shortlist", recipe: "Explorer grid or categorized map tour", target: "Story", preserves: "Every place and populated category. With publishing privileges, all data is stored in one hosted point feature layer.", review: "Builder displays up to eight categories. For more, duplicate the tour and split the visible categories between two tours; the backing layer retains all data.", keywords: ["shortlist"], supported: true },
   { key: "swipe", label: "Classic Swipe", recipe: "Swipe block", target: "Story", preserves: "The left and right web maps—or layer visibility from a single web map—plus available captions and orientation.", review: "Check map position, layer visibility, labels, and whether a Classic Spyglass layout needs manual adjustment.", keywords: ["swipespyglass"], supported: true },
-  { key: "mapseries", label: "Classic Map Series", recipe: "StoryMaps collection", target: "Collection", preserves: "Each tab or entry as a Collection item, including its order and hidden state where available.", review: "Open each Collection entry and check sharing, titles, thumbnails, and links to maps or apps.", keywords: ["mapseries"], supported: true },
+  { key: "mapseries", label: "Classic Map Series", recipe: "Collection with native web maps", target: "Collection", preserves: "Entry order, hidden state, summaries, and native web maps with saved extent, layer visibility, and popup settings.", review: "Collections have no narrative panel. Choose Story with sidecar for rich information-panel content beside each map. Review all maps and sharing before publishing.", keywords: ["mapseries"], supported: true },
   { key: "mapjournal", label: "Classic Map Journal", recipe: "Sidecar block", target: "Story", preserves: "Journal sections as Sidecar slides, narrative text, maps, media, galleries, buttons, and supported media actions.", review: "Check slide layouts, map actions, image groups, button destinations, and any unsupported custom behavior.", keywords: ["mapjournal"], supported: true },
   { key: "cascade", label: "Classic Cascade", recipe: "Long-form story", target: "Story", preserves: "Sequential narrative sections, immersive panels, maps, images, videos, iframe webpages as embeds, and credits.", review: "Check immersive layouts, media sizing, embed behavior, map choreography, and theme/background choices.", keywords: ["cascade"], supported: true },
 ];
@@ -319,6 +321,11 @@ async function loadGroupItems() {
   try {
     const { items, mode } = await fetchSourceItems(source, state.token);
     state.items = items.map(createConversionItem);
+    await Promise.all(state.items.map(async item => {
+      item.canConvert = await checkClassicConversionAccess(item, state.tokenUser, state.token);
+      item.selected = Boolean(item.template?.supported && item.canConvert);
+      if (!item.canConvert) item.status = "View only";
+    }));
     await Promise.all([
       attachPriorConversionSignals(state.items, state.tokenUser?.username, state.token),
       attachExistingReplacementSignals(state.items, state.token),
@@ -336,7 +343,7 @@ async function loadGroupItems() {
     expandStep(elements.stepItems, elements.stepItemsBody, elements.stepItemsSummary);
     elements.stepResults.hidden = true;
     updateActionButtons();
-    const supportedCount = state.items.filter(item => item.template?.supported).length;
+    const supportedCount = state.items.filter(item => item.template?.supported && item.canConvert).length;
     setStatus(`Found ${items.length} ${items.length === 1 ? "item" : "items"}. ${supportedCount} can be converted now and ${supportedCount === 1 ? "is" : "are"} selected.`, supportedCount ? "good" : "warn");
   } catch (error) {
     state.items = [];
@@ -382,11 +389,12 @@ function renderRows() {
   elements.rows.innerHTML = state.items.map(item => `
     <tr data-item-id="${escapeHtml(item.id)}" class="${item.template?.supported ? "" : "unsupported-row"}">
       <td>
-        <input type="checkbox" ${item.selected ? "checked" : ""} ${item.template?.supported ? "" : "disabled"} aria-label="Select ${escapeHtml(item.title)}" />
+        <input type="checkbox" ${item.selected ? "checked" : ""} ${item.template?.supported && item.canConvert ? "" : "disabled"} aria-label="Select ${escapeHtml(item.title)}" />
       </td>
       <td>
         <div class="bulk-row-title">${escapeHtml(item.title)}</div>
         <div class="bulk-row-meta">${escapeHtml(item.owner)} · ${escapeHtml(item.id)}</div>
+        ${!item.canConvert ? `<p class="bulk-row-meta">${escapeHtml(CLASSIC_CONVERSION_RESTRICTION)}</p>` : ""}
         ${renderExistingReplacementSignal(item)}
         ${renderPriorConversionSignal(item)}
       </td>
@@ -398,10 +406,20 @@ function renderRows() {
     input.addEventListener("change", event => {
       const row = event.target.closest("tr");
       const item = state.items.find(candidate => candidate.id === row.dataset.itemId);
-      if (item) item.selected = event.target.checked;
+      if (item) item.selected = Boolean(event.target.checked && item.canConvert && item.template?.supported);
       updateActionButtons();
       renderResultRows();
       updateSelectionSummary();
+    });
+  });
+  elements.rows.querySelectorAll("input[data-map-series-output]").forEach(input => {
+    input.addEventListener("change", () => {
+      if (state.activeCount > 0) return;
+      const item = state.items.find(candidate => candidate.id === input.dataset.mapSeriesOutput);
+      if (!item || !item.canConvert) return;
+      item.mapSeriesOutput = input.value;
+      renderRows();
+      elements.rows.querySelector(`input[data-map-series-output="${item.id}"][value="${item.mapSeriesOutput}"]`)?.focus();
     });
   });
   updateSelectionSummary();
@@ -410,7 +428,7 @@ function renderRows() {
 function setSupportedSelection(selected) {
   if (state.activeCount > 0) return;
   state.items.forEach(item => {
-    if (item.template?.supported) item.selected = selected;
+    item.selected = Boolean(selected && item.template?.supported && item.canConvert);
   });
   renderRows();
   renderResultRows();
@@ -418,8 +436,8 @@ function setSupportedSelection(selected) {
 }
 
 function updateSelectionSummary() {
-  const supportedCount = state.items.filter(item => item.template?.supported).length;
-  const selectedCount = state.items.filter(item => item.selected && item.template?.supported).length;
+  const supportedCount = state.items.filter(item => item.template?.supported && item.canConvert).length;
+  const selectedCount = state.items.filter(item => item.selected && item.template?.supported && item.canConvert).length;
   elements.selectionToolbar.hidden = supportedCount <= 1;
   if (!state.items.length) {
     elements.selectionSummary.textContent = "No items loaded.";
@@ -445,7 +463,7 @@ function updateShortlistCapabilityNotice() {
 }
 
 function renderResultRows() {
-  const resultItems = state.items.filter(item => item.selected && item.template?.supported);
+  const resultItems = state.items.filter(item => item.selected && item.template?.supported && item.canConvert);
   if (!resultItems.length) {
     elements.resultRows.innerHTML = `<tr><td colspan="5" class="empty">Select items to see conversion results here.</td></tr>`;
     return;
@@ -489,7 +507,7 @@ function renderTaskStatus(status) {
 }
 
 function renderRecipeDisclosure(item) {
-  const template = item.template;
+  const template = getConversionTemplate(item);
   if (!template) return "";
   const shortlistCreates = state.hostedFeatureCapability.allowed
     ? "One categorized Explorer tour backed by a hosted point feature layer."
@@ -512,13 +530,27 @@ function renderRecipeDisclosure(item) {
 function renderTemplate(item) {
   if (!item.template) return `<span class="template-pill muted">Not Classic</span>`;
   if (!item.template.supported) return `<span class="template-pill coming-soon">${escapeHtml(item.template.label)} · Unavailable</span>`;
+  const template = getConversionTemplate(item);
   return `
     <div class="template-mapping">
       <span class="template-pill">${escapeHtml(item.template.label)}</span>
-      <span class="template-recipe"><span aria-hidden="true">→</span> ${escapeHtml(item.template.recipe)}</span>
+      <span class="template-recipe"><span aria-hidden="true">→</span> ${escapeHtml(template.recipe)}</span>
+      ${item.template.key === "mapseries" ? `<fieldset class="map-series-output">
+        <legend>Convert to</legend>
+        <label><input type="radio" name="map-series-${item.id}" data-map-series-output="${item.id}" value="collection" ${item.mapSeriesOutput !== "sidecar" ? "checked" : ""} ${!item.canConvert || state.activeCount ? "disabled" : ""}> Collection · native maps</label>
+        <label><input type="radio" name="map-series-${item.id}" data-map-series-output="${item.id}" value="sidecar" ${item.mapSeriesOutput === "sidecar" ? "checked" : ""} ${!item.canConvert || state.activeCount ? "disabled" : ""}> Story · sidecar + navigation</label>
+      </fieldset>` : ""}
       ${renderRecipeDisclosure(item)}
     </div>
   `;
+}
+
+function getConversionTemplate(item) {
+  if (item.template?.key !== "mapseries" || item.mapSeriesOutput !== "sidecar") return item.template;
+  return { ...item.template, target: "Story", recipe: "One sidecar with navigation",
+    preserves: "Visible entries become slides in one sidecar. Titles and rich information-panel content sit beside native maps, images, or web embeds. Map extent, layer visibility, and popup settings are retained.",
+    review: "Hidden entries are omitted. Review navigation, narrative formatting, maps, and app embeds before publishing. Source maps are referenced, not copied or modified.",
+  };
 }
 
 function renderPriorConversionSignal(item) {
@@ -618,7 +650,10 @@ function getCopyLinkIcon(copied) {
 }
 
 function updateActionButtons() {
-  const selectedItems = state.items.filter(item => item.selected && item.template?.supported);
+  elements.rows.querySelectorAll("input[data-map-series-output]").forEach(input => {
+    input.disabled = state.activeCount > 0 || !state.items.find(item => item.id === input.dataset.mapSeriesOutput)?.canConvert;
+  });
+  const selectedItems = state.items.filter(item => item.selected && item.template?.supported && item.canConvert);
   const hasSelected = selectedItems.length > 0;
   const hasSource = hasParsedSource(parseSourceInput(elements.groupInput.value));
   elements.loadGroupButton.disabled = !state.tokenValid || !hasSource || state.activeCount > 0;
@@ -634,10 +669,11 @@ function enqueueSelected(create) {
   }
 
   state.queue = state.items
-    .filter(item => item.selected && item.template?.supported)
+    .filter(item => item.selected && item.template?.supported && item.canConvert)
     .map(item => ({
       itemId: item.id,
       token: state.token,
+      mapSeriesOutput: item.mapSeriesOutput || "collection",
       create,
     }));
   state.batch = {
@@ -734,6 +770,7 @@ function handleWorkerStatus(event) {
       type: "classic-converter:run",
       itemId,
       token: worker.task.token,
+      mapSeriesOutput: worker.task.mapSeriesOutput,
       create: worker.task.create,
     }, window.location.origin);
     return;
@@ -871,6 +908,7 @@ function createConversionItem(item) {
     itemControl: item.itemControl || "",
     url: item.url || `https://www.arcgis.com/home/item.html?id=${item.id}`,
     template,
+    mapSeriesOutput: "collection",
     selected: Boolean(template?.supported),
     status: template ? "Ready" : "Not Classic",
     result: "",

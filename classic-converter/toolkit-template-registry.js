@@ -4,6 +4,7 @@ function createClassicConverters({
   fetchRelatedShortlistContext,
   fetchRelatedSwipeContext,
   fetchRelatedMapJournalContext,
+  fetchRelatedMapSeriesContext,
   fetchNoRelatedContext,
   buildMapTourMigrationRecipe,
   buildShortlistMigrationRecipe,
@@ -14,7 +15,7 @@ function createClassicConverters({
   buildMapTourAgsmJson,
   buildShortlistAgsmJson,
   buildSwipeAgsmJson,
-  buildMapSeriesCollectionJson,
+  buildMapSeriesAgsmJson,
   buildMapJournalAgsmJson,
   buildCascadeAgsmJson
 }) {
@@ -85,11 +86,11 @@ function createClassicConverters({
       status: "ready",
       statusLabel: "Ready",
       keywords: ["mapseries"],
-      target: "Collection",
-      description: "Converts published series entries into Collection links.",
-      getRelatedContext: fetchNoRelatedContext,
+      target: "Collection or story with sidecar",
+      description: "Creates native Collection maps or a single sidecar with narrative panels and navigation.",
+      getRelatedContext: fetchRelatedMapSeriesContext,
       analyze: buildMapSeriesMigrationRecipe,
-      buildDraft: buildMapSeriesCollectionJson
+      buildDraft: buildMapSeriesAgsmJson
     }
   ];
 }
