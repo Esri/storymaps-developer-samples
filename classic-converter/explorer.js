@@ -1,3 +1,5 @@
+import { checkClassicConversionAccess, CLASSIC_CONVERSION_RESTRICTION } from "./toolkit-conversion-access.js";
+
 const CONFIG = window.CLASSIC_TOOLKIT_CONFIG || {};
 const ARCGIS_PORTAL_URL = String(CONFIG.arcgisPortalUrl || "https://www.arcgis.com").replace(/\/$/, "");
 const ARCGIS_SEARCH_URL = `${ARCGIS_PORTAL_URL}/sharing/rest/search`;
@@ -6,8 +8,6 @@ const OAUTH_REDIRECT_URI = String(CONFIG.oauthRedirectUri || "./arcgis-oauth-cal
 const OAUTH_EXPIRATION_MINUTES = Number(CONFIG.oauthExpirationMinutes || 120);
 const ARCHIVE_VIEWER_URL = String(CONFIG.archiveViewerUrl || "https://classic-story-archive.netlify.app/");
 const AUTH_STORAGE_KEY = "story-explorer:arcgis-auth";
-// Intentionally prefer localStorage so a successful sign-in can be reused across tabs for now.
-// If localStorage is unavailable, fall back to sessionStorage rather than dropping auth entirely.
 const CONVERTER_HANDOFF_KEY = "classic-storymaps:converter-handoff";
 const SCOPE_SUMMARY_COLLAPSED_KEY = "classic-storymaps:scope-summary-collapsed";
 const ITEMS_PER_PAGE = 24;
@@ -35,6 +35,8 @@ const state = {
   detailItem: null,
   detailReturnFocus: null,
   scopeSummaryRequestId: 0,
+  conversionAccess: new Map(),
+  accessRequestId: 0,
 };
 
 const elements = {
@@ -127,6 +129,10 @@ elements.results.addEventListener("change", event => {
   const item = state.items.find(candidate => candidate.id === checkbox.dataset.itemId);
   if (!item) return;
 
+  if (checkbox.checked && getUsableAuth() && state.conversionAccess.get(item.id) !== true) {
+    checkbox.checked = false;
+    return;
+  }
   if (checkbox.checked && state.selected.size >= MAX_SELECTION) {
     checkbox.checked = false;
     setError(`You can send up to ${MAX_SELECTION} items to the converter at once.`);
@@ -183,6 +189,7 @@ async function searchClassicItems() {
     state.nextStart = Number(json.nextStart || -1);
     renderResults();
     updatePagination();
+    refreshConversionAccess();
     updateUrl();
     const start = state.items.length ? (state.page - 1) * ITEMS_PER_PAGE + 1 : 0;
     const end = start ? start + state.items.length - 1 : 0;
@@ -300,7 +307,7 @@ function renderResults() {
           ${thumbnail ? `<img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" />` : `<span aria-hidden="true">Classic</span>`}
           <span class="result-access-badge">${escapeHtml(formatAccessBadge(item.access))}</span>
           ${selectionModeActive ? `<label class="result-select">
-            <input type="checkbox" data-item-id="${escapeHtml(item.id)}" aria-label="Select ${escapeHtml(item.title || item.id)} for conversion"${selected ? " checked" : ""} />
+            <input type="checkbox" data-item-id="${escapeHtml(item.id)}" aria-label="Select ${escapeHtml(item.title || item.id)} for conversion"${selected ? " checked" : ""}${getUsableAuth() && state.conversionAccess.get(item.id) !== true && !selected ? " disabled" : ""} />
             <span>Select</span>
           </label>` : ""}
         </div>
@@ -355,7 +362,8 @@ function updateSelection() {
       : "#";
 }
 
-function handleConverterNavigation(event, itemIds) {
+async function handleConverterNavigation(event, itemIds) {
+  event.preventDefault();
   if (!itemIds.length) {
     event.preventDefault();
     return;
@@ -366,12 +374,35 @@ function handleConverterNavigation(event, itemIds) {
     beginArcGISSignIn();
     return;
   }
-  saveConverterHandoff(itemIds);
+  if (await saveConverterHandoff(itemIds)) {
+    window.location.assign(`./converter.html?items=${encodeURIComponent(itemIds.join(","))}`);
+  }
 }
 
-function saveConverterHandoff(itemIds) {
+async function saveConverterHandoff(itemIds) {
   const auth = getUsableAuth();
   if (!auth) return false;
+  try {
+    // Do not trust gallery metadata or a pre-sign-in selection at handoff time.
+    const allowed = await Promise.all(itemIds.map(async id => {
+      const url = new URL(`${ARCGIS_PORTAL_URL}/sharing/rest/content/items/${encodeURIComponent(id)}`);
+      url.searchParams.set("f", "json");
+      url.searchParams.set("token", auth.token);
+      const response = await fetch(url, { cache: "no-store" });
+      const item = await response.json();
+      return response.ok && !item.error && item.id === id
+        && await checkClassicConversionAccess(item, auth, auth.token);
+    }));
+    if (getUsableAuth() !== auth) return false;
+    if (allowed.some(value => !value)) {
+      setError(CLASSIC_CONVERSION_RESTRICTION);
+      refreshConversionAccess();
+      return false;
+    }
+  } catch {
+    setError("Could not verify conversion access. Please try again.");
+    return false;
+  }
   const payload = {
     itemIds,
     token: auth.token,
@@ -503,7 +534,7 @@ async function handleArcGISAuthMessage(event) {
     state.pendingConverterItems = null;
     renderAuthState();
     setError("");
-    if (pendingConverterItems?.length && saveConverterHandoff(pendingConverterItems)) {
+    if (pendingConverterItems?.length && await saveConverterHandoff(pendingConverterItems)) {
       window.location.assign(`./converter.html?items=${encodeURIComponent(pendingConverterItems.join(","))}`);
     }
   } catch (error) {
@@ -615,6 +646,7 @@ function renderAuthState() {
     ? "Search Classic Story Maps"
     : "Search public Classic Story Maps";
   renderClassicScopeSummary(auth);
+  refreshConversionAccess();
   updateSelection();
   if (state.detailItem) renderDetailPanel(state.detailItem);
 }
@@ -751,6 +783,7 @@ function applyClassicScopeFilter(event) {
 
 function signOutOfArcGIS() {
   state.auth = null;
+  state.selected.clear();
   state.pendingConverterItems = null;
   clearPersistedAuth();
   window.sessionStorage.removeItem(CONVERTER_HANDOFF_KEY);
@@ -788,6 +821,8 @@ function renderDetailPanel(item) {
   const archiveUrl = new URL(ARCHIVE_VIEWER_URL);
   archiveUrl.searchParams.set("appid", item.id);
   const auth = getUsableAuth();
+  const conversionAllowed = !auth || state.conversionAccess.get(item.id) === true;
+  const accessChecking = auth && !state.conversionAccess.has(item.id);
   const converterUrl = auth ? `./converter.html?items=${encodeURIComponent(item.id)}` : "#arcgis-auth";
   const tags = (item.tags || []).map(tag => String(tag).trim()).filter(Boolean).slice(0, 8);
   elements.detailTitle.textContent = item.title || item.id;
@@ -812,12 +847,17 @@ function renderDetailPanel(item) {
     </dl>
     ${tags.length ? `<section class="detail-tags" aria-labelledby="detailTagsTitle"><h3 id="detailTagsTitle">Tags</h3><div>${tags.map(tag => `<span>${escapeHtml(tag)}</span>`).join("")}</div></section>` : ""}
     <div class="detail-actions">
-      <a id="detailConvertLink" class="button-link secondary-link" href="${converterUrl}">${auth ? "Open in Converter" : "Sign in to open Converter"}</a>
-      <button id="detailSelectButton" type="button" class="secondary">${selected ? "Remove from selection" : "Add to selection"}</button>
+      <a id="detailConvertLink" class="button-link secondary-link${conversionAllowed ? "" : " disabled"}" aria-disabled="${!conversionAllowed}" ${conversionAllowed ? `href="${converterUrl}"` : ""}>${auth ? "Open in Converter" : "Sign in to open Converter"}</a>
+      <button id="detailSelectButton" type="button" class="secondary" ${conversionAllowed || selected ? "" : "disabled"}>${selected ? "Remove from selection" : "Add to selection"}</button>
     </div>
+    ${!conversionAllowed ? `<p class="detail-summary" role="status">${accessChecking ? "Checking conversion access…" : escapeHtml(CLASSIC_CONVERSION_RESTRICTION)}</p>` : ""}
   `;
-  elements.detailBody.querySelector("#detailConvertLink").addEventListener("click", event => handleConverterNavigation(event, [item.id]));
+  elements.detailBody.querySelector("#detailConvertLink").addEventListener("click", event => {
+    if (!conversionAllowed) event.preventDefault();
+    else handleConverterNavigation(event, [item.id]);
+  });
   elements.detailBody.querySelector("#detailSelectButton").addEventListener("click", () => {
+    if (!conversionAllowed && !state.selected.has(item.id)) return;
     if (!state.selected.has(item.id) && state.selected.size >= MAX_SELECTION) {
       setError(`You can send up to ${MAX_SELECTION} items to the converter at once.`);
       return;
@@ -828,6 +868,28 @@ function renderDetailPanel(item) {
     updateSelection();
     renderDetailPanel(item);
   });
+}
+
+async function refreshConversionAccess() {
+  const requestId = ++state.accessRequestId;
+  const auth = getUsableAuth();
+  state.conversionAccess.clear();
+  renderResults();
+  if (state.detailItem) renderDetailPanel(state.detailItem);
+  if (!auth) return;
+  const items = new Map([...state.selected, ...state.items.map(item => [item.id, item])]);
+  if (state.detailItem) items.set(state.detailItem.id, state.detailItem);
+  const results = await Promise.all([...items.values()].map(async item => [
+    item.id, await checkClassicConversionAccess(item, auth, auth.token),
+  ]));
+  if (requestId !== state.accessRequestId || getUsableAuth() !== auth) return;
+  state.conversionAccess = new Map(results);
+  for (const [id, allowed] of results) {
+    if (!allowed) state.selected.delete(id);
+  }
+  renderResults();
+  updateSelection();
+  if (state.detailItem) renderDetailPanel(state.detailItem);
 }
 
 function formatAccess(access) {

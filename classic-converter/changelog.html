@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Changelog · Classic Story Explorer &amp; Converter</title>
+    <meta name="description" content="Feature enhancements and bug fixes for Classic Story Explorer and Converter." />
+    <link rel="icon" href="./icon.png" type="image/png" />
+    <link rel="stylesheet" href="./styles.css?v=20260828-1" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to changelog</a>
+    <header class="tool-header">
+      <div class="tool-header-inner">
+      <div class="tool-identity">
+        <a class="toolkit-back-icon" href="/" data-story-toolkit-back hidden aria-label="Back to Story Toolkit"><img src="./arrow-left.svg" alt="" /></a>
+        <a class="brand-mark" href="./index.html" aria-label="Classic Story Explorer &amp; Converter home"><img src="./wand-2.svg" alt="" /></a>
+        <div><h1>Classic Story Explorer &amp; Converter</h1><p class="tool-byline">Feature enhancements and bug fixes</p></div>
+      </div>
+      <nav class="tool-nav" aria-label="Classic StoryMaps Toolkit">
+        <a href="./index.html">Explorer</a>
+        <a href="./converter.html?manual=1">Converter</a>
+        <a href="./conversion-guide.html">Guide</a>
+        <a href="./changelog.html" aria-current="page">Changelog</a>
+      </nav>
+      </div>
+    </header>
+    <main id="main-content" class="shell changelog-shell">
+      <h2>Changelog</h2>
+      <p>Updates apply to new conversions. Existing Classic stories and previously created drafts are not changed.</p>
+      <article class="panel" aria-labelledby="release-110">
+        <h3 id="release-110">1.1.0 · <time datetime="2026-08-28">August 28, 2026</time></h3>
+        <h4>Added</h4>
+        <ul>
+          <li>Map Series output choice: a Collection, or a Story with one sidecar and navigation.</li>
+          <li>Sidecar narrative panels retain supported rich content from each visible Map Series information panel, including text, links, lists, images and embeds.</li>
+          <li>This public changelog, linked from the app footer and included in standalone downloads.</li>
+        </ul>
+        <h4>Improved</h4>
+        <ul>
+          <li>Map Series web maps now become native Collection maps instead of Map Viewer embeds.</li>
+          <li>Per-entry map extent, center/scale, layer visibility and supported popup settings are carried into the converted map configuration.</li>
+          <li>Collection entries retain plain-text summaries. Choose Sidecar when the information panel needs to remain alongside the map.</li>
+        </ul>
+        <h4>Fixed</h4>
+        <ul>
+          <li>Fixed a shared map-configuration issue that could turn hidden layers back on after combining Classic visibility overrides with the source web map.</li>
+        </ul>
+        <p>Review before publishing: source maps are referenced, not copied or modified. Collections retain hidden entries; Sidecar omits them. Unsupported Classic interactions and media may need manual adjustment. <a href="./conversion-guide.html#map-series">Read the Map Series conversion recipe</a>.</p>
+      </article>
+      <article class="panel" aria-labelledby="release-102">
+        <h3 id="release-102">1.0.2 · <time datetime="2026-08-28">August 28, 2026</time></h3>
+        <ul>
+          <li>Public Classic stories remain viewable, but conversion requires ownership or readable content within the signed-in user’s ArcGIS organization.</li>
+          <li>Added access checks to gallery selection, bulk conversion and the worker, including a fresh ownership check before creating items.</li>
+          <li>Blocked anonymous conversion and added explanations for view-only items.</li>
+        </ul>
+      </article>
+      <article class="panel" aria-labelledby="release-101">
+        <h3 id="release-101">1.0.1 · <time datetime="2026-08-14">August 14, 2026</time></h3>
+        <ul>
+          <li>Made the OAuth callback path configurable for static hosting, including S3 and CloudFront deployments under a path prefix.</li>
+          <li>The default callback is <code>./arcgis-oauth-callback.html</code>.</li>
+          <li>Added version and last-updated information to the footer.</li>
+        </ul>
+      </article>
+    </main>
+    <footer class="app-footer"><div class="app-footer-copy">
+      <p>This is a free, community-built project—not an official Esri product. These tools are not covered by Esri Technical Support. Use them at your own risk. It does not delete or modify any existing stories.</p>
+      <p class="app-footer-meta" data-classic-app-meta></p>
+    </div></footer>
+    <script src="./config.js?v=20260828-1"></script>
+  </body>
+</html>

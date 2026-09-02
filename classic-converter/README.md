@@ -56,12 +56,15 @@ This creates `dist/classic-storymaps-toolkit.zip`. The ZIP includes `DEPLOYMENT.
 - Sorts by modification date, creation date, title, or views.
 - Keeps a selection of up to 10 items while browsing result pages.
 - Opens a side panel with item metadata, access, tags, ArcGIS item, and Classic Archive details.
-- Passes selected item IDs and the signed-in token to Converter without exposing credentials in the URL.
-- Persists ArcGIS auth in browser localStorage so the signed-in session can be reused across tabs for now.
+- Passes selected item IDs and the signed-in token to Converter through same-origin session storage without exposing credentials in the URL.
 
 ## Current Scope
 
-- Keeps ArcGIS tokens in browser localStorage so Explorer and Converter can share authentication across tabs until the token expires or the user signs out; sessionStorage is only a fallback when localStorage is unavailable.
+- Map Series offers a Collection with native web maps (default), or a Story with one navigable sidecar and rich information-panel content. Per-entry map state is retained without modifying source maps. Hidden entries stay hidden in Collections and are omitted from Sidecar output.
+- User-facing release notes are maintained in [changelog.html](changelog.html), linked in the app footer, and included in standalone packages. Update this page with each version change in `config.js`.
+- Public stories remain viewable. Conversion requires sign-in and is limited to stories owned by the signed-in user or readable stories belonging to their ArcGIS organization. Public visibility alone (including an external organization's public story) does not grant conversion eligibility. Missing or unverifiable ownership/organization metadata blocks conversion.
+- Explorer, bulk selection, and the conversion worker apply this rule; the worker rechecks the source before creating drafts or hosted layers. This is a static-client workflow restriction, not platform-level copy protection for publicly exposed ArcGIS data.
+- Keeps ArcGIS auth in browser localStorage so Explorer and Converter can reuse a valid sign-in across tabs; sessionStorage is used as a fallback when localStorage is unavailable. Selected-item handoffs use same-origin session storage.
 - Validates tokens with ArcGIS `/community/self` and reads `/portals/self` privileges before offering hosted Shortlist publishing.
 - Accepts a Classic item id, Classic URL, ArcGIS group id, or ArcGIS group URL.
 - Uses `worker.html` as a lean hidden worker for each conversion task.
@@ -76,7 +79,7 @@ This creates `dist/classic-storymaps-toolkit.zip`. The ZIP includes `DEPLOYMENT.
 - For Classic Map Tour, follows referenced web maps, reads candidate Map Tour feature layers, and maps Classic `integrated` / `side-panel` layouts to AGSM map-focused / media-focused tour subtypes.
 - For Classic Shortlist, creates a private hosted point layer and one data-driven categorized Explorer grid containing every populated category when the token has `portal:user:createItem` and `portal:publisher:publishFeatures`. A single category uses a regular data-driven grid. Without those privileges or after a publishing failure, the converter preserves the data in separate embedded Explorer grids.
 - For Classic Swipe, converts two-web-map swipe layouts into one AGSM swipe block with web map resources and captions. Single-web-map layer swipe is supported when the Classic config exposes the compared layer ids; both swipe sides point to the same web map resource with per-side layer visibility overrides.
-- For Classic Map Series, converts entries into an AGSM Collection with embedded URL items and preserves Classic hidden entries as hidden Collection items.
+- For Classic Map Series, uses native web maps in Collections and retains hidden entries. The alternative Story output puts visible entries in one sidecar with navigation and rich narrative panels. Non-map web content remains embedded.
 - For Classic Map Journal, converts published sections into one AGSM sidecar with a slide per section.
 - For Classic Cascade, converts sequence blocks into linear story content, immersive views into floating-panel sidecar slides, cover images when available, credits, and theme hints.
 - Builds a migration recipe and AGSM-style `draft.json`.

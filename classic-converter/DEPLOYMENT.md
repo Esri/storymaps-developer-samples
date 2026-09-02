@@ -12,8 +12,8 @@ Classic StoryMaps Toolkit is a static site. It does not need Node.js, a database
    ```
 
 3. Confirm that Explorer can load public Classic story results.
-4. Choose the deployed callback URL `https://YOUR_HOST/storymaps-developer-samples/classic-converter/arcgis-oauth-callback.html` and register that exact URL in an ArcGIS OAuth application.
-5. In `config.js`, set that application's client ID as `oauthClientId` and keep `oauthRedirectUri` pointed at `./arcgis-oauth-callback.html` for the GitHub Pages deployment.
+4. Choose the deployed callback URL, such as `https://YOUR_HOST/OPTIONAL_PATH/arcgis-oauth-callback.html`, and register that exact URL in an ArcGIS OAuth application.
+5. In `config.js`, set that application's client ID as `oauthClientId` and configure `oauthRedirectUri` to resolve to the registered callback URL.
 6. Leave `storyToolkitHomeUrl` empty for a standalone deployment. Set it to the parent Story Toolkit URL only when these pages are hosted inside that app. The packaged `config.js` already uses the standalone OAuth client ID.
 7. Confirm that your organization permits this host to connect to `https://www.arcgis.com`.
 8. Sign in through Explorer, search a private scope, and hand a non-production item to Converter.
@@ -23,7 +23,6 @@ The standalone root `index.html` opens Classic Story Explorer directly. Explorer
 `oauthRedirectUri` accepts any of these forms:
 
 ```js
-oauthRedirectUri: "../arcgis-oauth-callback.html", // GitHub Pages deployment from classic-converter/
 oauthRedirectUri: "./arcgis-oauth-callback.html", // Beside the current Explorer page
 oauthRedirectUri: "/tools/classic/arcgis-oauth-callback.html", // From the host root
 oauthRedirectUri: "https://tools.example.com/classic/arcgis-oauth-callback.html", // Full same-origin URL
@@ -85,7 +84,7 @@ Browsers using the site must be able to make HTTPS requests to ArcGIS endpoints,
 - `https://www.arcgis.com/sharing/rest/`
 - `https://storymaps.arcgis.com/`
 
-Converted drafts and related hosted feature layers are created in the ArcGIS account represented by the token. The static host never receives or stores the token separately; it lives in browser localStorage and is sent directly to ArcGIS. Explorer passes it to Converter without putting the token in the URL. If localStorage is unavailable, the app falls back to sessionStorage for that tab.
+Converted drafts and related hosted feature layers are created in the ArcGIS account represented by the token. The static host never receives or stores the token separately; ArcGIS auth is kept in browser localStorage, with sessionStorage as a fallback, and is sent directly to ArcGIS. Explorer passes selected-item handoff data to Converter through same-origin session storage, not through a URL.
 
 ## Updating a deployment
 

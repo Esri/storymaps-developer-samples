@@ -1918,3 +1918,20 @@ button.classic-replacement-filter:hover:not(:disabled) {
     box-shadow: none;
   }
 }
+.map-series-output {
+  border: 0;
+  padding: 0;
+  margin: .6rem 0;
+  display: grid;
+  gap: .25rem;
+  font-size: .82rem;
+}
+.map-series-output legend { font-weight: 600; margin-bottom: .25rem; }
+.map-series-output label { display: flex; align-items: center; gap: .5rem; min-height: 2rem; cursor: pointer; }
+.map-series-output input[type="radio"] { width: 1rem; height: 1rem; margin: 0; accent-color: var(--accent, #147aad); }
+.changelog-shell { max-width: 960px; margin: 2rem auto; padding: 0 1.25rem; }
+.changelog-shell .panel { margin-block: 1.25rem; padding: 1.5rem; }
+.changelog-shell h3 { margin: 0 0 1rem; }
+.changelog-shell h4 { margin: 1rem 0 .5rem; }
+.changelog-shell li { margin-block: .5rem; line-height: 1.6; }
+.changelog-shell p { line-height: 1.6; }

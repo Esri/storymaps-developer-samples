@@ -4,6 +4,7 @@ function createClassicConverters({
   fetchRelatedShortlistContext: fetchRelatedShortlistContext2,
   fetchRelatedSwipeContext: fetchRelatedSwipeContext2,
   fetchRelatedMapJournalContext: fetchRelatedMapJournalContext2,
+  fetchRelatedMapSeriesContext: fetchRelatedMapSeriesContext2,
   fetchNoRelatedContext: fetchNoRelatedContext2,
   buildMapTourMigrationRecipe: buildMapTourMigrationRecipe2,
   buildShortlistMigrationRecipe: buildShortlistMigrationRecipe2,
@@ -14,7 +15,7 @@ function createClassicConverters({
   buildMapTourAgsmJson: buildMapTourAgsmJson2,
   buildShortlistAgsmJson: buildShortlistAgsmJson2,
   buildSwipeAgsmJson: buildSwipeAgsmJson2,
-  buildMapSeriesCollectionJson: buildMapSeriesCollectionJson2,
+  buildMapSeriesAgsmJson: buildMapSeriesAgsmJson2,
   buildMapJournalAgsmJson: buildMapJournalAgsmJson2,
   buildCascadeAgsmJson: buildCascadeAgsmJson2
 }) {
@@ -85,11 +86,11 @@ function createClassicConverters({
       status: "ready",
       statusLabel: "Ready",
       keywords: ["mapseries"],
-      target: "Collection",
-      description: "Converts published series entries into Collection links.",
-      getRelatedContext: fetchNoRelatedContext2,
+      target: "Collection or story with sidecar",
+      description: "Creates native Collection maps or a single sidecar with narrative panels and navigation.",
+      getRelatedContext: fetchRelatedMapSeriesContext2,
       analyze: buildMapSeriesMigrationRecipe2,
-      buildDraft: buildMapSeriesCollectionJson2
+      buildDraft: buildMapSeriesAgsmJson2
     }
   ];
 }
@@ -387,6 +388,46 @@ function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
+// packages/storytoolkit/src/classic-converter/conversion-access.js
+var CLASSIC_CONVERSION_RESTRICTION = "You can view this story, but conversion is limited to stories you own or can access within your ArcGIS organization. Public access alone does not allow conversion.";
+function canConvertClassicItem(item, user) {
+  if (!user?.username || !item?.owner) return false;
+  if (item.owner.toLowerCase() === user.username.toLowerCase()) return true;
+  const sourceOrgId = item.orgId || item.ownerOrgId;
+  return Boolean(user.orgId && sourceOrgId && user.orgId === sourceOrgId);
+}
+async function checkClassicConversionAccess(item, user, token) {
+  if (!token || !user?.username || !item?.owner) return false;
+  if (canConvertClassicItem(item, user)) return true;
+  const read = async (path) => {
+    const url = new URL(`https://www.arcgis.com/sharing/rest/${path}`);
+    url.searchParams.set("f", "json");
+    url.searchParams.set("token", token);
+    const response = await fetch(url, { cache: "no-store" });
+    const json = await response.json();
+    if (!response.ok || json.error) throw new Error("Could not verify conversion access.");
+    return json;
+  };
+  try {
+    let orgId = user.orgId;
+    if (!orgId) {
+      const portal = await read("portals/self");
+      if (portal.user?.username?.toLowerCase() !== user.username.toLowerCase()) return false;
+      orgId = portal.user.orgId || portal.id;
+    }
+    if (!orgId) return false;
+    let ownerOrgId = item.orgId || item.ownerOrgId;
+    if (!ownerOrgId) {
+      const owner = await read(`community/users/${encodeURIComponent(item.owner)}`);
+      if (owner.username?.toLowerCase() !== item.owner.toLowerCase()) return false;
+      ownerOrgId = owner.orgId;
+    }
+    return canConvertClassicItem({ ...item, ownerOrgId }, { ...user, orgId });
+  } catch {
+    return false;
+  }
+}
+
 // packages/storytoolkit/src/classic-converter/app.js
 var ARCGIS_ROOT = "https://www.arcgis.com/sharing/rest";
 var IMAGE_RESOURCE_FOLDER = "classic-converter-images";
@@ -422,6 +463,7 @@ var CLASSIC_CONVERTERS = createClassicConverters({
   fetchRelatedShortlistContext,
   fetchRelatedSwipeContext,
   fetchRelatedMapJournalContext,
+  fetchRelatedMapSeriesContext,
   fetchNoRelatedContext,
   buildMapTourMigrationRecipe,
   buildShortlistMigrationRecipe,
@@ -432,11 +474,12 @@ var CLASSIC_CONVERTERS = createClassicConverters({
   buildMapTourAgsmJson,
   buildShortlistAgsmJson,
   buildSwipeAgsmJson,
-  buildMapSeriesCollectionJson,
+  buildMapSeriesAgsmJson,
   buildMapJournalAgsmJson,
   buildCascadeAgsmJson
 });
 var state = {
+  mapSeriesOutput: "collection",
   token: "",
   user: null,
   tokenInfo: null,
@@ -476,6 +519,7 @@ if (hasClassicConverterUi) {
   elements.analyzeButton?.addEventListener("click", analyzeSource);
   elements.createButton?.addEventListener("click", createPrototypeItem);
   renderConverterSupport();
+  updateCreateButton();
   initializeUrlAndMessaging();
 }
 function setStatus(element, message, tone = "neutral") {
@@ -501,6 +545,7 @@ function initializeUrlAndMessaging() {
   const item = params.get("item") || params.get("itemid") || params.get("appid") || "";
   const token = params.get("token") || "";
   const embedded = params.get("embedded") === "1";
+  state.mapSeriesOutput = params.get("mapSeriesOutput") === "sidecar" ? "sidecar" : "collection";
   if (item) elements.sourceInput.value = item;
   if (token) {
     elements.tokenInput.value = token;
@@ -511,7 +556,7 @@ function initializeUrlAndMessaging() {
     document.body.classList.add("embedded");
     postWorkerMessage({ event: "ready" });
   }
-  if (token || item) {
+  if (!embedded && (token || item)) {
     queueMicrotask(async () => {
       if (token) await validateToken();
       if (item) await analyzeSource();
@@ -534,12 +579,16 @@ async function handleWorkerMessage(event) {
   try {
     if (token) elements.tokenInput.value = token;
     if (item) elements.sourceInput.value = item;
+    if (message.mapSeriesOutput && !["collection", "sidecar"].includes(message.mapSeriesOutput)) {
+      throw new Error("Choose Collection or Story with sidecar for Map Series conversion.");
+    }
+    state.mapSeriesOutput = message.mapSeriesOutput || "collection";
     postWorkerMessage({ event: "validating-token" });
     const tokenOk = token ? await validateToken() : Boolean(state.token);
     if (!tokenOk) throw new Error("Token validation failed.");
     postWorkerMessage({ event: "analyzing" });
     const analyzed = await analyzeSource();
-    if (!analyzed || !state.recipe || !state.outputJson) throw new Error("Source analysis did not produce a draft.");
+    if (!analyzed || !state.recipe || !state.outputJson) throw new Error(elements.sourceStatus.textContent || "Source analysis did not produce a draft.");
     postWorkerMessage({
       event: "analyzed",
       itemId: state.recipe.source.id,
@@ -551,7 +600,7 @@ async function handleWorkerMessage(event) {
     if (!shouldCreate) return;
     postWorkerMessage({ event: "creating" });
     const created = await createPrototypeItem();
-    if (!created) throw new Error("Create failed.");
+    if (!created) throw new Error(elements.createStatus.textContent || "Create failed.");
     postWorkerMessage({
       event: "created",
       itemId: state.recipe.source.id,
@@ -696,6 +745,10 @@ function createUnavailableHostedFeatureCapability(reason) {
   };
 }
 async function analyzeSource() {
+  if (!state.token || !state.user?.username) {
+    setStatus(elements.sourceStatus, "Sign in through Classic Story Explorer or validate a token before converting a story.", "warn");
+    return false;
+  }
   const itemId = extractItemId(elements.sourceInput.value);
   if (!itemId) {
     setStatus(elements.sourceStatus, "Could not find a 32-character ArcGIS item id in that input.", "warn");
@@ -705,10 +758,11 @@ async function analyzeSource() {
   clearCreatedItemLink();
   setStatus(elements.sourceStatus, `Reading item <strong>${escapeHtml(itemId)}</strong>...`);
   try {
-    const [item, data] = await Promise.all([
-      fetchItemInfo(itemId, state.token),
-      fetchItemData(itemId, state.token)
-    ]);
+    const item = await fetchItemInfo(itemId, state.token);
+    if (!await checkClassicConversionAccess(item, state.user, state.token)) {
+      throw new Error(CLASSIC_CONVERSION_RESTRICTION);
+    }
+    const data = await fetchItemData(itemId, state.token);
     const template = detectClassicTemplate(item, data);
     if (!template) {
       state.sourceItem = item;
@@ -724,7 +778,7 @@ async function analyzeSource() {
       return false;
     }
     const relatedContext = await template.getRelatedContext(data, state.token);
-    const recipe = template.analyze({ item, data, template, relatedContext });
+    const recipe = template.analyze({ item, data, template, relatedContext, mapSeriesOutput: state.mapSeriesOutput });
     const outputJson = template.buildDraft ? template.buildDraft(recipe) : null;
     const validation = outputJson ? await validateGeneratedDraft(outputJson) : null;
     if (validation?.errors?.length) {
@@ -799,6 +853,10 @@ async function createPrototypeItem() {
   let hostedFeatureLayer = null;
   let hostedFeatureFallbackWarning = "";
   try {
+    const source = await fetchItemInfo(state.recipe.source.id, state.token);
+    if (!await checkClassicConversionAccess(source, state.user, state.token)) {
+      throw new Error(CLASSIC_CONVERSION_RESTRICTION);
+    }
     const outputKind = getRecipeOutputKind(state.recipe);
     const title = `(Converted) ${state.recipe.source.title || "Untitled Classic StoryMap"} - AGSM ${outputKind} migration draft`;
     const tags = uniqueStrings([
@@ -995,7 +1053,7 @@ async function fetchItemInfo(itemId, token) {
   const url = new URL(`${ARCGIS_ROOT}/content/items/${encodeURIComponent(itemId)}`);
   url.searchParams.set("f", "json");
   if (token) url.searchParams.set("token", token);
-  const response = await fetch(url);
+  const response = await fetch(url, { cache: "no-store" });
   const json = await response.json();
   assertArcGisSuccess(json, "Could not read item info.");
   return json;
@@ -1696,6 +1754,22 @@ async function fetchRelatedMapJournalContext(data, token) {
     relatedWebMaps: await fetchRelatedWebMapItems(data, token)
   };
 }
+async function fetchRelatedMapSeriesContext(data, token) {
+  const entries = Array.isArray(data?.values?.story?.entries) ? data.values.story.entries : [];
+  const ids = uniqueStrings(entries.map((entry) => entry?.media?.webmap?.id || entry?.media?.webmap?.itemId).filter(isArcGisItemId));
+  const relatedWebMaps = [];
+  for (let start = 0; start < ids.length; start += 6) {
+    const batch = await Promise.all(ids.slice(start, start + 6).map(async (itemId) => {
+      try {
+        return { itemId, data: await fetchItemData(itemId, token) };
+      } catch {
+        return { itemId, data: null };
+      }
+    }));
+    relatedWebMaps.push(...batch);
+  }
+  return { relatedWebMaps };
+}
 async function fetchRelatedWebMapItems(data, token) {
   const webMapIds = uniqueStrings([
     ...getClassicWebMapIds(data),
@@ -2220,20 +2294,26 @@ function buildCascadeMigrationRecipe({ item, data, template }) {
     warnings
   };
 }
-function buildMapSeriesMigrationRecipe({ item, data, template }) {
+function buildMapSeriesMigrationRecipe({ item, data, template, relatedContext = {}, mapSeriesOutput = "collection" }) {
+  if (!["collection", "sidecar"].includes(mapSeriesOutput)) throw new Error("Unsupported Map Series output.");
   const entries = Array.isArray(data?.values?.story?.entries) ? data.values.story.entries : [];
   const themeHints = getClassicThemeHints(data);
   const mapViewerTheme = getMapSeriesViewerTheme(themeHints);
-  const collectionEntries = entries.map((entry, index) => getMapSeriesCollectionEntry(entry, index, { mapViewerTheme })).filter(Boolean);
+  const collectionEntries = entries.map((entry, index) => getMapSeriesCollectionEntry(entry, index, { mapViewerTheme, item, relatedContext })).filter(Boolean);
   const hiddenCount = collectionEntries.filter((entry) => entry.isHidden).length;
   const warnings = [];
   if (!entries.length) warnings.push("No Map Series entries were found in values.story.entries[].");
-  if (hiddenCount > 0) warnings.push(`${hiddenCount} hidden Map Series entries were preserved as hidden Collection items.`);
+  if (relatedContext.relatedWebMaps?.some((map) => !map.data)) warnings.push("Some referenced web maps could not be read. Their item references and explicit Classic overrides are retained; review map visibility and sharing before publishing.");
+  if (hiddenCount > 0) warnings.push(mapSeriesOutput === "sidecar" ? `${hiddenCount} hidden Map Series entries were omitted from the sidecar. Choose Collection to retain hidden entries for later review.` : `${hiddenCount} hidden Map Series entries were preserved as hidden Collection items.`);
   if (!collectionEntries.length) warnings.push("No Map Series entries with convertible media were found.");
+  if (mapSeriesOutput === "collection" && collectionEntries.some((entry) => entry.description)) {
+    warnings.push("Collection summaries do not replace the Classic information panel. Choose Story with sidecar to preserve its rich narrative content beside each map.");
+  }
   return {
     template,
     supported: true,
-    outputKind: "collection",
+    outputKind: mapSeriesOutput === "sidecar" ? "story" : "collection",
+    mapSeriesOutput,
     themeHints,
     source: {
       id: item.id,
@@ -2897,6 +2977,13 @@ function buildMapSeriesCollectionJson(recipe) {
       entry.thumbnailResourceId = thumbnailResourceId;
     }
     const itemConfig = getCollectionItemConfig(entry);
+    if (entry.sourceType === "webmap") {
+      const nodeId = createJournalMediaNodeFromMedia(entry.media, entry.title, recipe, id, nodes, resources);
+      const resourceId = id("r");
+      resources[resourceId] = { type: "portal-item", data: { itemId: entry.itemId, itemType: "Web Map" } };
+      items.push({ nodeId, resourceId, customTitle: entry.title, ...itemConfig });
+      return;
+    }
     if (entry.sourceType === "portal-item" && isArcGisItemId(entry.itemId)) {
       const resourceId = id("r");
       resources[resourceId] = {
@@ -2938,6 +3025,66 @@ function buildMapSeriesCollectionJson(recipe) {
     data: createAgsmThemeData(recipe)
   };
   return { root: rootId, nodes, resources };
+}
+function buildMapSeriesAgsmJson(recipe) {
+  return recipe.mapSeriesOutput === "sidecar" ? buildMapSeriesSidecarJson(recipe) : buildMapSeriesCollectionJson(recipe);
+}
+function buildMapSeriesSidecarJson(recipe) {
+  const id = createIdFactory();
+  const rootId = id("n");
+  const coverId = id("n");
+  const navId = id("n");
+  const sidecarId = id("n");
+  const themeId = id("r");
+  const nodes = {};
+  const resources = {};
+  const links = [];
+  const slides = [];
+  const entries = (recipe.collectionEntries || []).filter((entry) => !entry.isHidden);
+  if (!entries.length) throw new Error("No visible Map Series entries are available for a sidecar.");
+  nodes[coverId] = { type: "storycover", data: {
+    type: "minimal",
+    title: `(Converted) ${recipe.source.title || "Classic Map Series"}`,
+    summary: recipe.source.snippet || "",
+    byline: recipe.source.byline || recipe.source.owner || ""
+  } };
+  const titleIds = entries.map(() => id("n"));
+  const anchors = new Map(entries.map((entry, index) => [`#classic-journal-section-${entry.sourceIndex}`, `#ref-${titleIds[index]}`]));
+  const actions = [];
+  entries.forEach((entry, index) => {
+    const slideId = id("n");
+    const panelId = id("n");
+    const titleId = titleIds[index];
+    nodes[titleId] = { type: "text", data: { type: "h2", text: escapeHtml(entry.title) } };
+    const panelChildren = [titleId, ...createJournalNarrativeBlockNodes(
+      getNarrativeBlocks(entry.narrativeHtml, entry.actionMap),
+      id,
+      nodes,
+      resources,
+      anchors,
+      { buttonLayout: "rows", actionList: actions, actionMap: entry.actionMap, recipe, slideId, actionMediaTitle: entry.title }
+    )];
+    nodes[panelId] = { type: "immersive-narrative-panel", data: { panelStyle: "themed" }, children: panelChildren };
+    const mediaId = createJournalMediaNodeFromMedia(entry.media, entry.title, recipe, id, nodes, resources);
+    nodes[slideId] = { type: "immersive-slide", data: { transition: "fade" }, children: [panelId, mediaId] };
+    slides.push(slideId);
+    links.push({ nodeId: titleId });
+  });
+  nodes[navId] = { type: "navigation", data: { links }, config: { isHidden: false } };
+  nodes[sidecarId] = { type: "immersive", data: {
+    type: "sidecar",
+    subtype: "docked-panel",
+    narrativePanelPosition: "start",
+    narrativePanelSize: "medium"
+  }, children: slides };
+  nodes[rootId] = {
+    type: "story",
+    data: withRootLogo({ storyTheme: themeId }, recipe.source.logo, id, resources),
+    config: { coverDate: "first-published" },
+    children: [coverId, navId, sidecarId]
+  };
+  resources[themeId] = { type: "story-theme", data: createAgsmThemeData(recipe) };
+  return { root: rootId, nodes, resources, ...actions.length ? { actions } : {} };
 }
 function createUriImageResource(src, height = 800, width = 1200) {
   return {
@@ -3131,7 +3278,7 @@ function createJournalMediaNodeFromMedia(media, title, recipe, id, nodes, resour
   if (media.type === "webmap" && isArcGisItemId(media.itemId)) {
     const resourceId2 = id("r");
     const nodeId2 = id("n");
-    const extentData = compactExtentData(media.extent);
+    const extentData = { ...compactExtentData(media.extent), ...media.viewData || {} };
     const choreographyData = getClassicWebMapChoreographyData(media);
     resources[resourceId2] = {
       type: "webmap",
@@ -3622,7 +3769,8 @@ function getClassicMapLayerOverrides(layers) {
   return (Array.isArray(layers) ? layers : []).filter((layer) => layer?.id).slice(0, 100).map((layer) => ({
     id: String(layer.id),
     title: stripHtml(layer.title || layer.name || layer.id),
-    visible: layer.visibility !== false
+    // Merged overrides already use StoryMaps' `visible`; raw Classic uses `visibility`.
+    visible: (layer.visible ?? layer.visibility) !== false
   }));
 }
 function getClassicPinnedPopupInfo(popup) {
@@ -3876,15 +4024,24 @@ function getMapSeriesCollectionEntry(entry, index, options = {}) {
   const description = stripHtml(entry.description || webpage.altText || image.altText || "");
   const isHidden = String(entry.status || "PUBLISHED").toUpperCase() !== "PUBLISHED";
   const thumbnailUrl = getMapSeriesEntryThumbnailUrl(entry);
+  const narrativeHtml = String(entry.description || entry.content || "");
+  const details = {
+    sourceIndex: index,
+    narrativeHtml,
+    actionMap: getJournalActionMap(entry.contentActions || [], options.item, options.relatedContext),
+    media: getMapJournalMedia(media, title, options.item, options.relatedContext)
+  };
+  if (details.media.type === "webmap") details.media.viewData = getMapSeriesMapView(webmap);
   if (media.type === "webmap" && isArcGisItemId(webmap.id || webmap.itemId)) {
     const itemId = webmap.id || webmap.itemId;
     return {
+      ...details,
       title,
       description,
       url: getCollectionMapViewerWebMapUrl(itemId, {
         theme: options.mapViewerTheme
       }),
-      sourceType: "webpage",
+      sourceType: "webmap",
       itemId,
       thumbnailUrl,
       isHidden
@@ -3894,6 +4051,7 @@ function getMapSeriesCollectionEntry(entry, index, options = {}) {
   if (media.type === "webpage" && webpageUrl) {
     const itemId = extractItemId(webpageUrl);
     return {
+      ...details,
       title,
       description,
       url: webpageUrl,
@@ -3907,6 +4065,7 @@ function getMapSeriesCollectionEntry(entry, index, options = {}) {
   if (media.type === "image" && imageUrl) {
     const itemId = extractItemId(imageUrl);
     return {
+      ...details,
       title,
       description,
       url: imageUrl,
@@ -3920,6 +4079,8 @@ function getMapSeriesCollectionEntry(entry, index, options = {}) {
   if (fallbackUrl) {
     const itemId = extractItemId(fallbackUrl);
     return {
+      ...details,
+      media: { type: "webpage", url: fallbackUrl, caption: title },
       title,
       description,
       url: fallbackUrl,
@@ -3933,9 +4094,25 @@ function getMapSeriesCollectionEntry(entry, index, options = {}) {
 }
 function getCollectionItemConfig(entry) {
   const config = {};
+  if (entry.description) config.customSummary = entry.description;
   if (entry.isHidden) config.isHidden = true;
   if (entry.thumbnailResourceId) config.customThumbnail = entry.thumbnailResourceId;
   return config;
+}
+function getMapSeriesMapView(webmap) {
+  const extentData = compactExtentData(webmap.extent);
+  const rawCenter = webmap.center;
+  const center = Array.isArray(rawCenter) && rawCenter.length >= 2 ? { x: rawCenter[0], y: rawCenter[1], spatialReference: webmap.spatialReference || { wkid: 4326 } } : isPlainObject2(rawCenter) ? rawCenter : extentData.center;
+  const validCenter = center && Number.isFinite(center.x) && Number.isFinite(center.y);
+  return {
+    ...extentData,
+    ...validCenter ? { center, viewpoint: {
+      targetGeometry: center,
+      rotation: Number.isFinite(webmap.rotation) ? webmap.rotation : 0,
+      ...Number.isFinite(webmap.scale) && webmap.scale > 0 ? { scale: webmap.scale } : {}
+    } } : {},
+    ...Number.isFinite(webmap.zoom) ? { zoom: webmap.zoom } : {}
+  };
 }
 function getMapSeriesEntryThumbnailUrl(entry) {
   const media = entry?.media || {};
@@ -4151,7 +4328,7 @@ function getRecipeConverterBlockType(recipe) {
     shortlist: "maptour",
     mapjournal: "sidecar",
     swipe: "swipe",
-    mapseries: "collection",
+    mapseries: recipe.mapSeriesOutput === "sidecar" ? "sidecar" : "collection",
     cascade: "story"
   };
   return blockTypes[recipe?.template?.key] || (getRecipeOutputKind(recipe) === "collection" ? "collection" : "story");
@@ -4830,8 +5007,10 @@ export {
   buildCascadeMigrationRecipe,
   buildMapJournalAgsmJson,
   buildMapJournalMigrationRecipe,
+  buildMapSeriesAgsmJson,
   buildMapSeriesCollectionJson,
   buildMapSeriesMigrationRecipe,
+  buildMapSeriesSidecarJson,
   buildMapTourAgsmJson,
   buildMapTourMigrationRecipe,
   buildShortlistAgsmJson,
